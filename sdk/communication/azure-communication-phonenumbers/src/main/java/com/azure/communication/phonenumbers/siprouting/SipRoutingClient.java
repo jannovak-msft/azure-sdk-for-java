@@ -104,6 +104,26 @@ public final class SipRoutingClient {
     }
 
     /**
+     * Deletes SIP Trunk.
+     *
+     * @param trunk SIP Trunk.
+     * @return deleted SIP Trunk or null.
+     */
+    @ServiceMethod(returns = ReturnType.SINGLE)
+    public Trunk deleteTrunk(Trunk trunk) {
+        List<Trunk> trunks = getTrunks();
+        Integer deleteIndex = findIndex(trunks, trunk);
+
+        if (deleteIndex != null) {
+            Trunk removedTrunk = trunks.remove((int)deleteIndex);
+            setTrunks(trunks);
+            return removedTrunk;
+        }
+
+        return null;
+    }
+
+    /**
      * Sets SIP Trunk Routes.
      *
      * @param routes SIP Trunk Routes.
@@ -133,6 +153,26 @@ public final class SipRoutingClient {
         }
 
         return setRoutes(routes);
+    }
+
+    /**
+     * Deletes SIP Trunk Route.
+     *
+     * @param route SIP Trunk Route.
+     * @return deleted SIP Trunk Route or null.
+     */
+    @ServiceMethod(returns = ReturnType.SINGLE)
+    public TrunkRoute deleteRoute(TrunkRoute route) {
+        List<TrunkRoute> routes = getRoutes();
+        Integer deleteIndex = findIndex(routes, route);
+
+        if (deleteIndex != null) {
+            TrunkRoute removedRoute = routes.remove((int)deleteIndex);
+            setRoutes(routes);
+            return removedRoute;
+        }
+
+        return null;
     }
 
     /**
