@@ -9,11 +9,16 @@ import com.azure.communication.phonenumbers.siprouting.implementation.models.Com
 import com.azure.communication.phonenumbers.siprouting.implementation.models.SipConfiguration;
 import com.azure.communication.phonenumbers.siprouting.models.SipRoutingError;
 import com.azure.communication.phonenumbers.siprouting.models.SipRoutingResponseException;
+import com.azure.communication.phonenumbers.siprouting.models.Trunk;
+import com.azure.communication.phonenumbers.siprouting.models.TrunkRoute;
 import com.azure.core.annotation.ReturnType;
 import com.azure.core.annotation.ServiceClient;
 import com.azure.core.annotation.ServiceMethod;
 import com.azure.core.http.rest.Response;
 import com.azure.core.util.Context;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * Client for SIP routing configuration.
@@ -27,12 +32,28 @@ public final class SipRoutingClient {
     }
 
     /**
-     * Gets SIP configuration.
+     * Gets SIP Trunks.
      *
-     * @return SIP configuration.
+     * @return SIP Trunks.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
-    public SipConfiguration getSipConfiguration() {
+    public Map<String, Trunk> getTrunks() {
+        SipConfiguration configuration = getSipConfiguration();
+        return configuration.getTrunks();
+    }
+
+    /**
+     * Gets SIP Trunk Routes.
+     *
+     * @return SIP Trunk Routes.
+     */
+    @ServiceMethod(returns = ReturnType.SINGLE)
+    public List<TrunkRoute> getRoutes() {
+        SipConfiguration configuration = getSipConfiguration();
+        return configuration.getRoutes();
+    }
+
+    private SipConfiguration getSipConfiguration() {
         return client.getSipConfigurationAsync()
             .onErrorMap(CommunicationErrorResponseException.class, this::translateException)
             .block();
