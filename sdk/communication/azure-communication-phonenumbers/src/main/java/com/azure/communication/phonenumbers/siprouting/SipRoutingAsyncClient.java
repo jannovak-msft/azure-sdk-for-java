@@ -90,7 +90,7 @@ public final class SipRoutingAsyncClient {
      * @return SIP Trunks.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
-    public Mono<List<Trunk>> setTrunk(Trunk trunk) {
+    public Mono<Trunk> setTrunk(Trunk trunk) {
         List<Trunk> trunks = getTrunks().block();
         Integer setIndex = findIndex(trunks, trunk);
         if (setIndex != null) {
@@ -99,7 +99,7 @@ public final class SipRoutingAsyncClient {
             trunks.add(trunk);
         }
 
-        return setTrunks(trunks);
+        return setTrunks(trunks).map(trunks1 -> trunk);
     }
 
     /**
@@ -208,9 +208,9 @@ public final class SipRoutingAsyncClient {
      * @return Response object with the SIP Trunk Routes.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
-    public Mono<Response<List<Trunk>>> setRoutesWithResponse(List<TrunkRoute> routes, Context context) {
+    public Mono<Response<List<TrunkRoute>>> setRoutesWithResponse(List<TrunkRoute> routes, Context context) {
         return client.patchSipConfigurationWithResponseAsync(new SipConfiguration(routes), context)
-            .map(result -> new SimpleResponse<>(result, TrunkConverter.convert(result.getValue().getTrunks())));
+            .map(result -> new SimpleResponse<>(result, result.getValue().getRoutes()));
     }
 
     /**
@@ -221,7 +221,7 @@ public final class SipRoutingAsyncClient {
      * @return SIP Trunk Routes.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
-    public Mono<List<TrunkRoute>> setRoute(TrunkRoute route) {
+    public Mono<TrunkRoute> setRoute(TrunkRoute route) {
         List<TrunkRoute> routes = getRoutes().block();
         Integer setIndex = findIndex(routes, route);
         if (setIndex != null) {
@@ -230,7 +230,7 @@ public final class SipRoutingAsyncClient {
             routes.add(route);
         }
 
-        return setRoutes(routes);
+        return setRoutes(routes).map(trunkRoutes -> route);
     }
 
     /**

@@ -90,16 +90,17 @@ public final class SipRoutingClient {
      * @return SIP Trunks.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
-    public List<Trunk> setTrunk(Trunk trunk) {
+    public Trunk setTrunk(Trunk trunk) {
         List<Trunk> trunks = getTrunks();
         Integer setIndex = findIndex(trunks, trunk);
         if (setIndex != null) {
             trunks.set(setIndex, trunk);
+            return setTrunks(trunks).get(setIndex);
         } else {
             trunks.add(trunk);
+            // todo
+            return setTrunks(trunks).get(trunks.size() - 1);
         }
-
-        return setTrunks(trunks);
     }
 
     /**
@@ -213,9 +214,9 @@ public final class SipRoutingClient {
      * @return Response object with the SIP Trunk Routes.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
-    public Response<List<Trunk>> setRoutesWithResponse(List<TrunkRoute> routes, Context context) {
+    public Response<List<TrunkRoute>> setRoutesWithResponse(List<TrunkRoute> routes, Context context) {
         return client.patchSipConfigurationWithResponseAsync(new SipConfiguration(routes), context)
-            .map(result -> new SimpleResponse<>(result, TrunkConverter.convert(result.getValue().getTrunks())))
+            .map(result -> new SimpleResponse<>(result, result.getValue().getRoutes()))
             .block();
     }
 
@@ -227,16 +228,17 @@ public final class SipRoutingClient {
      * @return SIP Trunk Routes.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
-    public List<TrunkRoute> setRoute(TrunkRoute route) {
+    public TrunkRoute setRoute(TrunkRoute route) {
         List<TrunkRoute> routes = getRoutes();
         Integer setIndex = findIndex(routes, route);
         if (setIndex != null) {
             routes.set(setIndex, route);
+            return setRoutes(routes).get(setIndex);
         } else {
             routes.add(route);
+            // todo
+            return setRoutes(routes).get(routes.size() - 1);
         }
-
-        return setRoutes(routes);
     }
 
     /**
