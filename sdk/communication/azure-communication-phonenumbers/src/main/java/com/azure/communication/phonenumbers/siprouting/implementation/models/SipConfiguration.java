@@ -4,7 +4,6 @@
 
 package com.azure.communication.phonenumbers.siprouting.implementation.models;
 
-import com.azure.communication.phonenumbers.siprouting.models.Trunk;
 import com.azure.communication.phonenumbers.siprouting.models.TrunkRoute;
 import com.azure.core.annotation.Fluent;
 import com.fasterxml.jackson.annotation.JsonProperty;

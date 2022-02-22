@@ -7,9 +7,8 @@ import com.azure.communication.phonenumbers.siprouting.models.TrunkRoute;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import static java.util.Arrays.asList;
 
@@ -29,15 +28,13 @@ public class SetExample {
 
     public static void main(String[] args) {
         SipRoutingClient client = new SipRoutingClientBuilder().connectionString(CONNECTION_STRING).buildClient();
-        Map<String, Trunk> trunks = client.setTrunks(prepareTrunks());
+        List<Trunk> trunks = client.setTrunks(prepareTrunks());
         List<TrunkRoute> routes = client.setRoutes(prepareRoutes());
         print(trunks, routes);
     }
 
-    private static Map<String, Trunk> prepareTrunks() {
-        Map<String, Trunk> trunks = new HashMap<>();
-        trunks.put(TRUNK_FQDN, new Trunk().setSipSignalingPort(TRUNK_SIP_SIGNALING_PORT));
-        return trunks;
+    private static List<Trunk> prepareTrunks() {
+        return asList(new Trunk().setFqdn(TRUNK_FQDN).setSipSignalingPort(TRUNK_SIP_SIGNALING_PORT));
     }
 
     private static List<TrunkRoute> prepareRoutes() {
@@ -45,7 +42,7 @@ public class SetExample {
             new TrunkRoute().setName(ROUTE_NAME).setNumberPattern(ROUTE_PATTERN).setTrunks(asList(TRUNK_FQDN)));
     }
 
-    private static void print(Map<String, Trunk> trunks, List<TrunkRoute> routes) {
+    private static void print(List<Trunk> trunks, List<TrunkRoute> routes) {
         try {
             System.out.printf("SIP Trunks: %s%nSIP Trunk Routes: %s%n",
                 MAPPER.writeValueAsString(trunks),

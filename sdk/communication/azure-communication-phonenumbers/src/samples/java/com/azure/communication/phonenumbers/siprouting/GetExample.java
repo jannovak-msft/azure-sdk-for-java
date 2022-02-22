@@ -8,7 +8,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * Get SIP routing configuration example.
@@ -21,12 +20,12 @@ public class GetExample {
 
     public static void main(String[] args) {
         SipRoutingClient client = new SipRoutingClientBuilder().connectionString(CONNECTION_STRING).buildClient();
-        Map<String, Trunk> trunks = client.getTrunks();
+        List<Trunk> trunks = client.getTrunks();
         List<TrunkRoute> routes = client.getRoutes();
         print(trunks, routes);
     }
 
-    private static void print(Map<String, Trunk> trunks, List<TrunkRoute> routes) {
+    private static void print(List<Trunk> trunks, List<TrunkRoute> routes) {
         try {
             System.out.printf("SIP Trunks: %s%nSIP Trunk Routes: %s%n",
                 MAPPER.writeValueAsString(trunks),

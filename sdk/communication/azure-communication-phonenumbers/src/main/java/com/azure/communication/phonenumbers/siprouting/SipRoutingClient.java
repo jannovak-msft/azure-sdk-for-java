@@ -5,6 +5,7 @@ package com.azure.communication.phonenumbers.siprouting;
 
 import com.azure.communication.phonenumbers.siprouting.implementation.SipRoutingAdminClientImpl;
 import com.azure.communication.phonenumbers.siprouting.implementation.converters.SipRoutingErrorConverter;
+import com.azure.communication.phonenumbers.siprouting.implementation.converters.TrunkConverter;
 import com.azure.communication.phonenumbers.siprouting.implementation.models.CommunicationErrorResponseException;
 import com.azure.communication.phonenumbers.siprouting.implementation.models.SipConfiguration;
 import com.azure.communication.phonenumbers.siprouting.models.SipRoutingError;
@@ -18,8 +19,6 @@ import com.azure.core.http.rest.Response;
 import com.azure.core.util.Context;
 
 import java.util.List;
-import java.util.Map;
-
 /**
  * Client for SIP routing configuration.
  */
@@ -37,9 +36,9 @@ public final class SipRoutingClient {
      * @return SIP Trunks.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
-    public Map<String, Trunk> getTrunks() {
+    public List<Trunk> getTrunks() {
         SipConfiguration configuration = getSipConfiguration();
-        return configuration.getTrunks();
+        return TrunkConverter.convert(configuration.getTrunks());
     }
 
     /**
@@ -79,9 +78,9 @@ public final class SipRoutingClient {
      * @return SIP Trunks.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
-    public Map<String, Trunk> setTrunks(Map<String, Trunk> trunks) {
-        SipConfiguration configuration = setSipConfiguration(new SipConfiguration(trunks));
-        return configuration.getTrunks();
+    public List<Trunk> setTrunks(List<Trunk> trunks) {
+        SipConfiguration configuration = setSipConfiguration(new SipConfiguration(TrunkConverter.convert(trunks)));
+        return TrunkConverter.convert(configuration.getTrunks());
     }
 
     /**
