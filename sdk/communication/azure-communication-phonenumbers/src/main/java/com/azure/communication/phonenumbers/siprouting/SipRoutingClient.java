@@ -72,7 +72,7 @@ public final class SipRoutingClient {
     }
 
     /**
-     * Updates SIP Trunks.
+     * Sets SIP Trunks.
      *
      * @param trunks SIP Trunks.
      * @return SIP Trunks.
@@ -84,7 +84,27 @@ public final class SipRoutingClient {
     }
 
     /**
-     * Updates SIP Trunk Routes.
+     * Sets SIP Trunk.
+     * If a trunk with specified FQDN already exists, it will be replaced, otherwise a new trunk will be added.
+     *
+     * @param trunk SIP Trunk.
+     * @return SIP Trunks.
+     */
+    @ServiceMethod(returns = ReturnType.SINGLE)
+    public List<Trunk> setTrunk(Trunk trunk) {
+        List<Trunk> trunks = getTrunks();
+        Integer setIndex = findIndex(trunks, trunk);
+        if (setIndex != null) {
+            trunks.set(setIndex, trunk);
+        } else {
+            trunks.add(trunk);
+        }
+
+        return setTrunks(trunks);
+    }
+
+    /**
+     * Sets SIP Trunk Routes.
      *
      * @param routes SIP Trunk Routes.
      * @return SIP Trunk Routes.
@@ -153,6 +173,16 @@ public final class SipRoutingClient {
         for (int i = 0, routesSize = routes.size(); i < routesSize; i++) {
             TrunkRoute storedRoute = routes.get(i);
             if (route.getName() != null && route.getName().equals(storedRoute.getName())) {
+                return i;
+            }
+        }
+        return null;
+    }
+
+    private Integer findIndex(List<Trunk> trunks, Trunk trunk) {
+        for (int i = 0, trunksSize = trunks.size(); i < trunksSize; i++) {
+            Trunk storedTrunk = trunks.get(i);
+            if (trunk.getFqdn() != null && trunk.getFqdn().equals(storedTrunk.getFqdn())) {
                 return i;
             }
         }
