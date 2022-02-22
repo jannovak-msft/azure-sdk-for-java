@@ -9,6 +9,9 @@ import com.azure.core.util.ServiceVersion;
  * The versions of SIP Routing Service supported by this client library.
  */
 public enum SipRoutingServiceVersion implements ServiceVersion {
+    /**
+     * Service version {@code 2021-05-01-preview}.
+     */
     V2021_05_01_PREVIEW("2021-05-01-preview");
 
     private final String version;
