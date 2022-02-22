@@ -97,6 +97,26 @@ public final class SipRoutingClient {
     }
 
     /**
+     * Sets SIP Trunk Route.
+     * If a route with specified name already exists, it will be replaced, otherwise a new route will be added.
+     *
+     * @param route SIP Trunk Route.
+     * @return SIP Trunk Routes.
+     */
+    @ServiceMethod(returns = ReturnType.SINGLE)
+    public List<TrunkRoute> setRoute(TrunkRoute route) {
+        List<TrunkRoute> routes = getRoutes();
+        Integer setIndex = findIndex(routes, route);
+        if (setIndex != null) {
+            routes.set(setIndex, route);
+        } else {
+            routes.add(route);
+        }
+
+        return setRoutes(routes);
+    }
+
+    /**
      * Updates SIP configuration.
      *
      * @param update the configuration update.
@@ -128,5 +148,15 @@ public final class SipRoutingClient {
             error = SipRoutingErrorConverter.convert(exception.getValue().getError());
         }
         return new SipRoutingResponseException(exception.getMessage(), exception.getResponse(), error);
+    }
+
+    private Integer findIndex(List<TrunkRoute> routes, TrunkRoute route) {
+        for (int i = 0, routesSize = routes.size(); i < routesSize; i++) {
+            TrunkRoute storedRoute = routes.get(i);
+            if (route.getName() != null && route.getName().equals(storedRoute.getName())) {
+                return i;
+            }
+        }
+        return null;
     }
 }
