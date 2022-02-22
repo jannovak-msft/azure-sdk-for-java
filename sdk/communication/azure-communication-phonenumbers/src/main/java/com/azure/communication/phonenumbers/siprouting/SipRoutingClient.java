@@ -58,7 +58,7 @@ public final class SipRoutingClient {
      * @return SIP configuration.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
-    public SipConfiguration updateSipConfiguration(SipConfiguration update) {
+    public SipConfiguration setSipConfiguration(SipConfiguration update) {
         return client.patchSipConfigurationAsync(update)
             .onErrorMap(CommunicationErrorResponseException.class, this::translateException)
             .block();
@@ -72,7 +72,7 @@ public final class SipRoutingClient {
      * @return Response object with the SIP configuration.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
-    public Response<SipConfiguration> updateSipConfigurationWithResponse(SipConfiguration update, Context context) {
+    public Response<SipConfiguration> setSipConfigurationWithResponse(SipConfiguration update, Context context) {
         return client.patchSipConfigurationWithResponseAsync(update, context)
             .onErrorMap(CommunicationErrorResponseException.class, this::translateException)
             .block();

@@ -55,7 +55,7 @@ public final class SipRoutingAsyncClient {
      * @return SIP configuration.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
-    public Mono<SipConfiguration> updateSipConfiguration(SipConfiguration update) {
+    public Mono<SipConfiguration> setSipConfiguration(SipConfiguration update) {
         return this.client.patchSipConfigurationAsync(update)
             .onErrorMap(CommunicationErrorResponseException.class, e -> translateException(e));
     }
@@ -67,7 +67,7 @@ public final class SipRoutingAsyncClient {
      * @return Response object with the SIP configuration.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
-    public Mono<Response<SipConfiguration>> updateSipConfigurationWithResponse(SipConfiguration update) {
+    public Mono<Response<SipConfiguration>> setSipConfigurationWithResponse(SipConfiguration update) {
         return this.client.patchSipConfigurationWithResponseAsync(update)
             .onErrorMap(CommunicationErrorResponseException.class, e -> translateException(e));
     }

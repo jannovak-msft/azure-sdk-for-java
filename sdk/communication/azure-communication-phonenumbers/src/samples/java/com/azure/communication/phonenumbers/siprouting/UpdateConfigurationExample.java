@@ -29,11 +29,11 @@ public class UpdateConfigurationExample {
 
     public static void main(String[] args) {
         SipRoutingClient client = new SipRoutingClientBuilder().connectionString(CONNECTION_STRING).buildClient();
-        SipConfiguration updatedConfiguration = client.updateSipConfiguration(prepareUpdate());
-        printConfiguration(updatedConfiguration);
+        SipConfiguration configuration = client.setSipConfiguration(prepareConfiguration());
+        printConfiguration(configuration);
     }
 
-    private static SipConfiguration prepareUpdate() {
+    private static SipConfiguration prepareConfiguration() {
         HashMap<String, Trunk> trunks = new HashMap<>();
         trunks.put(TRUNK_FQDN, new Trunk().setSipSignalingPort(TRUNK_SIP_SIGNALING_PORT));
         List<TrunkRoute> routes =
