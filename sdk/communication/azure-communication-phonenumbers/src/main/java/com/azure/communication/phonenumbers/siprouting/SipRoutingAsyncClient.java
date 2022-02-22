@@ -16,6 +16,8 @@ import com.azure.core.annotation.ReturnType;
 import com.azure.core.annotation.ServiceClient;
 import com.azure.core.annotation.ServiceMethod;
 import com.azure.core.http.rest.Response;
+import com.azure.core.http.rest.SimpleResponse;
+import com.azure.core.util.Context;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
@@ -43,14 +45,16 @@ public final class SipRoutingAsyncClient {
     }
 
     /**
-     * Gets SIP configuration.
+     * Gets SIP Trunks.
      *
-     * @return Response object with the SIP configuration.
+     * @param context the context of the request. Can also be null or Context.NONE.
+     * @return Response object with the SIP Trunks.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
-    public Mono<Response<SipConfiguration>> getSipConfigurationWithResponse() {
-        return this.client.getSipConfigurationWithResponseAsync()
-            .onErrorMap(CommunicationErrorResponseException.class, this::translateException);
+    public Mono<Response<List<Trunk>>> getTrunksWithResponse(Context context) {
+        return client.getSipConfigurationWithResponseAsync(context)
+            .onErrorMap(CommunicationErrorResponseException.class, this::translateException)
+            .map(result -> new SimpleResponse<>(result, TrunkConverter.convert(result.getValue().getTrunks())));
     }
 
     /**
@@ -63,6 +67,19 @@ public final class SipRoutingAsyncClient {
     public Mono<List<Trunk>> setTrunks(List<Trunk> trunks) {
         Mono<SipConfiguration> configuration = setSipConfiguration(new SipConfiguration(TrunkConverter.convert(trunks)));
         return configuration.map(config -> TrunkConverter.convert(config.getTrunks()));
+    }
+
+    /**
+     * Sets SIP Trunks.
+     *
+     * @param trunks SIP Trunks.
+     * @param context the context of the request. Can also be null or Context.NONE.
+     * @return Response object with the SIP Trunks.
+     */
+    @ServiceMethod(returns = ReturnType.SINGLE)
+    public Mono<Response<List<Trunk>>> setTrunksWithResponse(List<Trunk> trunks, Context context) {
+        return client.patchSipConfigurationWithResponseAsync(new SipConfiguration(TrunkConverter.convert(trunks)), context)
+            .map(result -> new SimpleResponse<>(result, TrunkConverter.convert(result.getValue().getTrunks())));
     }
 
     /**
@@ -86,6 +103,28 @@ public final class SipRoutingAsyncClient {
     }
 
     /**
+     * Sets SIP Trunk.
+     * If a trunk with specified FQDN already exists, it will be replaced, otherwise a new trunk will be added.
+     *
+     * @param trunk SIP Trunk.
+     * @param context the context of the request. Can also be null or Context.NONE.
+     * @return Response object with the SIP Trunk.
+     */
+    @ServiceMethod(returns = ReturnType.SINGLE)
+    public Mono<Response<Trunk>> setTrunkWithResponse(Trunk trunk, Context context) {
+        List<Trunk> trunks = getTrunks().block();
+        Integer setIndex = findIndex(trunks, trunk);
+        if (setIndex != null) {
+            trunks.set(setIndex, trunk);
+        } else {
+            trunks.add(trunk);
+        }
+
+        return client.patchSipConfigurationWithResponseAsync(new SipConfiguration(TrunkConverter.convert(trunks)), context)
+            .map(result -> new SimpleResponse<>(result, trunk));
+    }
+
+    /**
      * Deletes SIP Trunk.
      *
      * @param trunk SIP Trunk.
@@ -104,6 +143,28 @@ public final class SipRoutingAsyncClient {
     }
 
     /**
+     * Deletes SIP Trunk.
+     *
+     * @param trunk SIP Trunk.
+     * @param context the context of the request. Can also be null or Context.NONE.
+     * @return Response object with the SIP Trunk.
+     */
+    @ServiceMethod(returns = ReturnType.SINGLE)
+    public Mono<Response<Trunk>> deleteTrunkWithResponse(Trunk trunk, Context context) {
+        List<Trunk> trunks = getTrunks().block();
+        Integer deleteIndex = findIndex(trunks, trunk);
+
+        if (deleteIndex != null) {
+            Trunk removedTrunk = trunks.remove((int)deleteIndex);
+            setTrunksWithResponse(trunks, context);
+
+            return client.patchSipConfigurationWithResponseAsync(new SipConfiguration(TrunkConverter.convert(trunks)), context)
+                .map(result -> new SimpleResponse<>(result, removedTrunk));
+        }
+        return null;
+    }
+
+    /**
      * Gets SIP Trunk Routes.
      *
      * @return SIP Trunk Routes.
@@ -112,6 +173,19 @@ public final class SipRoutingAsyncClient {
     public Mono<List<TrunkRoute>> getRoutes() {
         Mono<SipConfiguration> configuration = getSipConfiguration();
         return configuration.map(SipConfiguration::getRoutes);
+    }
+
+    /**
+     * Gets SIP Trunk Routes.
+     *
+     * @param context the context of the request. Can also be null or Context.NONE.
+     * @return Response object with the SIP Trunk Routes.
+     */
+    @ServiceMethod(returns = ReturnType.SINGLE)
+    public Mono<Response<List<TrunkRoute>>> getRoutesWithResponse(Context context) {
+        return client.getSipConfigurationWithResponseAsync(context)
+            .onErrorMap(CommunicationErrorResponseException.class, this::translateException)
+            .map(result -> new SimpleResponse<>(result, result.getValue().getRoutes()));
     }
 
     /**
@@ -124,6 +198,19 @@ public final class SipRoutingAsyncClient {
     public Mono<List<TrunkRoute>> setRoutes(List<TrunkRoute> routes) {
         Mono<SipConfiguration> configuration = setSipConfiguration(new SipConfiguration(routes));
         return configuration.map(SipConfiguration::getRoutes);
+    }
+
+    /**
+     * Sets SIP Trunk Routes.
+     *
+     * @param routes SIP Trunk Routes.
+     * @param context the context of the request. Can also be null or Context.NONE.
+     * @return Response object with the SIP Trunk Routes.
+     */
+    @ServiceMethod(returns = ReturnType.SINGLE)
+    public Mono<Response<List<Trunk>>> setRoutesWithResponse(List<TrunkRoute> routes, Context context) {
+        return client.patchSipConfigurationWithResponseAsync(new SipConfiguration(routes), context)
+            .map(result -> new SimpleResponse<>(result, TrunkConverter.convert(result.getValue().getTrunks())));
     }
 
     /**
@@ -147,6 +234,28 @@ public final class SipRoutingAsyncClient {
     }
 
     /**
+     * Sets SIP Trunk Route.
+     * If a route with specified name already exists, it will be replaced, otherwise a new route will be added.
+     *
+     * @param route SIP Trunk Route.
+     * @param context the context of the request. Can also be null or Context.NONE.
+     * @return Response object with the SIP Trunk Route.
+     */
+    @ServiceMethod(returns = ReturnType.SINGLE)
+    public Mono<Response<TrunkRoute>> setRouteWithResponse(TrunkRoute route, Context context) {
+        List<TrunkRoute> routes = getRoutes().block();
+        Integer setIndex = findIndex(routes, route);
+        if (setIndex != null) {
+            routes.set(setIndex, route);
+        } else {
+            routes.add(route);
+        }
+
+        return client.patchSipConfigurationWithResponseAsync(new SipConfiguration(routes), context)
+            .map(result -> new SimpleResponse<>(result, route));
+    }
+
+    /**
      * Deletes SIP Trunk Route.
      *
      * @param route SIP Trunk Route.
@@ -165,15 +274,25 @@ public final class SipRoutingAsyncClient {
     }
 
     /**
-     * Updates SIP configuration.
+     * Deletes SIP Trunk Route.
      *
-     * @param update the configuration update.
-     * @return Response object with the SIP configuration.
+     * @param route SIP Trunk Route.
+     * @param context the context of the request. Can also be null or Context.NONE.
+     * @return Response object with the SIP Trunk Route.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
-    public Mono<Response<SipConfiguration>> setSipConfigurationWithResponse(SipConfiguration update) {
-        return this.client.patchSipConfigurationWithResponseAsync(update)
-            .onErrorMap(CommunicationErrorResponseException.class, e -> translateException(e));
+    public Mono<Response<TrunkRoute>> deleteRouteWithResponse(TrunkRoute route, Context context) {
+        List<TrunkRoute> routes = getRoutes().block();
+        Integer deleteIndex = findIndex(routes, route);
+
+        if (deleteIndex != null) {
+            TrunkRoute removedRoute = routes.remove((int)deleteIndex);
+            setRoutesWithResponse(routes, context);
+
+            return client.patchSipConfigurationWithResponseAsync(new SipConfiguration(routes), context)
+                .map(result -> new SimpleResponse<>(result, removedRoute));
+        }
+        return null;
     }
 
     private Mono<SipConfiguration> getSipConfiguration() {
