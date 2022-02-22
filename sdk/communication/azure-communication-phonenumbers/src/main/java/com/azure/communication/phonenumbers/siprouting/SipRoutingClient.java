@@ -6,7 +6,7 @@ package com.azure.communication.phonenumbers.siprouting;
 import com.azure.communication.phonenumbers.siprouting.implementation.SipRoutingAdminClientImpl;
 import com.azure.communication.phonenumbers.siprouting.implementation.converters.SipRoutingErrorConverter;
 import com.azure.communication.phonenumbers.siprouting.implementation.models.CommunicationErrorResponseException;
-import com.azure.communication.phonenumbers.siprouting.models.SipConfiguration;
+import com.azure.communication.phonenumbers.siprouting.implementation.models.SipConfiguration;
 import com.azure.communication.phonenumbers.siprouting.models.SipRoutingError;
 import com.azure.communication.phonenumbers.siprouting.models.SipRoutingResponseException;
 import com.azure.core.annotation.ReturnType;

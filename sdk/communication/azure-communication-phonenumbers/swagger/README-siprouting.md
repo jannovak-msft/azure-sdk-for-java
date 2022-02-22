@@ -32,7 +32,7 @@ title: Azure Communication Phone Numbers SIP Routing Service
 tag: package-2021-05-01-preview
 input-file: https://raw.githubusercontent.com/Azure/azure-rest-api-specs/3b84377154da23b8b5a011a7c0344f36f56ced16/specification/communication/data-plane/SipRouting/preview/2021-05-01-preview/communicationservicessiprouting.json
 override-client-name: SipRoutingAdminClient
-custom-types: SipConfiguration,Trunk,TrunkRoute
+custom-types: Trunk,TrunkRoute
 custom-types-subpackage: models
 models-subpackage: implementation.models
 java: true

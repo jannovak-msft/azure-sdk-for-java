@@ -5,7 +5,7 @@
 package com.azure.communication.phonenumbers.siprouting.implementation;
 
 import com.azure.communication.phonenumbers.siprouting.implementation.models.CommunicationErrorResponseException;
-import com.azure.communication.phonenumbers.siprouting.models.SipConfiguration;
+import com.azure.communication.phonenumbers.siprouting.implementation.models.SipConfiguration;
 import com.azure.core.annotation.BodyParam;
 import com.azure.core.annotation.ExpectedResponses;
 import com.azure.core.annotation.Get;
