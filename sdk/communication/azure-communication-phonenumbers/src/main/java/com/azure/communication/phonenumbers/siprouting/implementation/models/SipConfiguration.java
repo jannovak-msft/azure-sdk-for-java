@@ -31,6 +31,17 @@ public final class SipConfiguration {
     @JsonProperty(value = "routes")
     private List<TrunkRoute> routes;
 
+    public SipConfiguration() {
+    }
+
+    public SipConfiguration(Map<String, Trunk> trunks) {
+        this.trunks = trunks;
+    }
+
+    public SipConfiguration(List<TrunkRoute> routes) {
+        this.routes = routes;
+    }
+
     /**
      * Get the trunks property: SIP trunks for routing calls. Map key is trunk's FQDN (1-249 characters).
      *

@@ -73,13 +73,36 @@ public final class SipRoutingClient {
     }
 
     /**
+     * Updates SIP Trunks.
+     *
+     * @param trunks SIP Trunks.
+     * @return SIP Trunks.
+     */
+    @ServiceMethod(returns = ReturnType.SINGLE)
+    public Map<String, Trunk> setTrunks(Map<String, Trunk> trunks) {
+        SipConfiguration configuration = setSipConfiguration(new SipConfiguration(trunks));
+        return configuration.getTrunks();
+    }
+
+    /**
+     * Updates SIP Trunk Routes.
+     *
+     * @param routes SIP Trunk Routes.
+     * @return SIP Trunk Routes.
+     */
+    @ServiceMethod(returns = ReturnType.SINGLE)
+    public List<TrunkRoute> setRoutes(List<TrunkRoute> routes) {
+        SipConfiguration configuration = setSipConfiguration(new SipConfiguration(routes));
+        return configuration.getRoutes();
+    }
+
+    /**
      * Updates SIP configuration.
      *
      * @param update the configuration update.
      * @return SIP configuration.
      */
-    @ServiceMethod(returns = ReturnType.SINGLE)
-    public SipConfiguration setSipConfiguration(SipConfiguration update) {
+    private SipConfiguration setSipConfiguration(SipConfiguration update) {
         return client.patchSipConfigurationAsync(update)
             .onErrorMap(CommunicationErrorResponseException.class, this::translateException)
             .block();
