@@ -42,23 +42,6 @@ public final class SipRoutingClient {
     }
 
     /**
-     * Gets SIP Trunk Routes.
-     *
-     * @return SIP Trunk Routes.
-     */
-    @ServiceMethod(returns = ReturnType.SINGLE)
-    public List<TrunkRoute> getRoutes() {
-        SipConfiguration configuration = getSipConfiguration();
-        return configuration.getRoutes();
-    }
-
-    private SipConfiguration getSipConfiguration() {
-        return client.getSipConfigurationAsync()
-            .onErrorMap(CommunicationErrorResponseException.class, this::translateException)
-            .block();
-    }
-
-    /**
      * Gets SIP configuration.
      *
      * @param context the context of the request. Can also be null or Context.NONE.
@@ -124,6 +107,17 @@ public final class SipRoutingClient {
     }
 
     /**
+     * Gets SIP Trunk Routes.
+     *
+     * @return SIP Trunk Routes.
+     */
+    @ServiceMethod(returns = ReturnType.SINGLE)
+    public List<TrunkRoute> getRoutes() {
+        SipConfiguration configuration = getSipConfiguration();
+        return configuration.getRoutes();
+    }
+
+    /**
      * Sets SIP Trunk Routes.
      *
      * @param routes SIP Trunk Routes.
@@ -176,19 +170,7 @@ public final class SipRoutingClient {
     }
 
     /**
-     * Updates SIP configuration.
-     *
-     * @param update the configuration update.
-     * @return SIP configuration.
-     */
-    private SipConfiguration setSipConfiguration(SipConfiguration update) {
-        return client.patchSipConfigurationAsync(update)
-            .onErrorMap(CommunicationErrorResponseException.class, this::translateException)
-            .block();
-    }
-
-    /**
-     * Updates SIP configuration.
+     * Sets SIP configuration.
      *
      * @param update the configuration update.
      * @param context the context of the request. Can also be null or Context.NONE.
@@ -197,6 +179,18 @@ public final class SipRoutingClient {
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Response<SipConfiguration> setSipConfigurationWithResponse(SipConfiguration update, Context context) {
         return client.patchSipConfigurationWithResponseAsync(update, context)
+            .onErrorMap(CommunicationErrorResponseException.class, this::translateException)
+            .block();
+    }
+
+    private SipConfiguration getSipConfiguration() {
+        return client.getSipConfigurationAsync()
+            .onErrorMap(CommunicationErrorResponseException.class, this::translateException)
+            .block();
+    }
+
+    private SipConfiguration setSipConfiguration(SipConfiguration update) {
+        return client.patchSipConfigurationAsync(update)
             .onErrorMap(CommunicationErrorResponseException.class, this::translateException)
             .block();
     }
