@@ -134,7 +134,7 @@ public final class SipRoutingAdminClientImpl {
      * calls.
      */
     @Host("{endpoint}")
-    @ServiceInterface(name = "SipRoutingAdminClient")
+    @ServiceInterface(name = "SipRoutingAdminClien")
     private interface SipRoutingAdminClientService {
         @Get("/sip")
         @ExpectedResponses({200})
