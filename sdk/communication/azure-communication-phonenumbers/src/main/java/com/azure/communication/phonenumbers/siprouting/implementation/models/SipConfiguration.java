@@ -6,6 +6,7 @@ package com.azure.communication.phonenumbers.siprouting.implementation.models;
 
 import com.azure.communication.phonenumbers.siprouting.models.TrunkRoute;
 import com.azure.core.annotation.Fluent;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 import java.util.Map;
@@ -22,12 +23,14 @@ public final class SipConfiguration {
      * Map key is trunk's FQDN (1-249 characters).
      */
     @JsonProperty(value = "trunks")
+    @JsonInclude(value = JsonInclude.Include.NON_ABSENT)
     private Map<String, Trunk> trunks;
 
     /*
      * Trunk routes for routing calls.
      */
     @JsonProperty(value = "routes")
+    @JsonInclude(value = JsonInclude.Include.NON_ABSENT)
     private List<TrunkRoute> routes;
 
     public SipConfiguration() {
