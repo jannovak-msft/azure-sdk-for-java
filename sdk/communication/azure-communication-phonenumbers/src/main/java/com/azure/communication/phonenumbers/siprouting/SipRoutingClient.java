@@ -20,6 +20,8 @@ import com.azure.core.http.rest.SimpleResponse;
 import com.azure.core.util.Context;
 
 import java.util.List;
+import java.util.stream.Collectors;
+
 /**
  * Client for SIP routing configuration.
  */
@@ -129,18 +131,19 @@ public final class SipRoutingClient {
     /**
      * Deletes SIP Trunk.
      *
-     * @param trunk SIP Trunk.
+     * @param fqdn SIP Trunk FQDN.
      * @return deleted SIP Trunk or null.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
-    public Trunk deleteTrunk(Trunk trunk) {
+    public Trunk deleteTrunk(String fqdn) {
         List<Trunk> trunks = getTrunks();
-        Integer deleteIndex = findIndex(trunks, trunk);
+        List<Trunk> deletedTrunks = trunks.stream().filter(trunk -> fqdn.equals(trunk.getFqdn()))
+            .collect(Collectors.toList());
 
-        if (deleteIndex != null) {
-            Trunk removedTrunk = trunks.remove((int)deleteIndex);
-            setTrunks(trunks);
-            return removedTrunk;
+        if (!deletedTrunks.isEmpty()) {
+            setTrunks(trunks.stream().filter(trunk -> !fqdn.equals(trunk.getFqdn()))
+                .collect(Collectors.toList()));
+            return deletedTrunks.get(0);
         }
 
         return null;
@@ -267,18 +270,19 @@ public final class SipRoutingClient {
     /**
      * Deletes SIP Trunk Route.
      *
-     * @param route SIP Trunk Route.
+     * @param name SIP Trunk Route name.
      * @return deleted SIP Trunk Route or null.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
-    public TrunkRoute deleteRoute(TrunkRoute route) {
+    public TrunkRoute deleteRoute(String name) {
         List<TrunkRoute> routes = getRoutes();
-        Integer deleteIndex = findIndex(routes, route);
+        List<TrunkRoute> deletedRoutes = routes.stream().filter(route -> name.equals(route.getName()))
+            .collect(Collectors.toList());
 
-        if (deleteIndex != null) {
-            TrunkRoute removedRoute = routes.remove((int)deleteIndex);
-            setRoutes(routes);
-            return removedRoute;
+        if (!deletedRoutes.isEmpty()) {
+            setRoutes(routes.stream().filter(route -> !name.equals(route.getName()))
+                .collect(Collectors.toList()));
+            return deletedRoutes.get(0);
         }
 
         return null;

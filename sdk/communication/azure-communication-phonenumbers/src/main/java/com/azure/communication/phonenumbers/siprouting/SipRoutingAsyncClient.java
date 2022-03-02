@@ -21,6 +21,7 @@ import com.azure.core.util.Context;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Async client for SIP routing configuration.
@@ -127,17 +128,18 @@ public final class SipRoutingAsyncClient {
     /**
      * Deletes SIP Trunk.
      *
-     * @param trunk SIP Trunk.
+     * @param fqdn SIP Trunk FQDN.
      * @return deleted SIP Trunk or null.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
-    public Mono<Trunk> deleteTrunk(Trunk trunk) {
+    public Mono<Trunk> deleteTrunk(String fqdn) {
         List<Trunk> trunks = getTrunks().block();
-        Integer deleteIndex = findIndex(trunks, trunk);
+        List<Trunk> deletedTrunks = trunks.stream().filter(trunk -> fqdn.equals(trunk.getFqdn()))
+            .collect(Collectors.toList());
 
-        if (deleteIndex != null) {
-            final Trunk removedTrunk = trunks.remove((int)deleteIndex);
-            return setTrunks(trunks).map(storedTrunks -> removedTrunk);
+        if (!deletedTrunks.isEmpty()) {
+            return setTrunks(trunks.stream().filter(trunk -> !fqdn.equals(trunk.getFqdn()))
+                .collect(Collectors.toList())).map(storedTrunks -> deletedTrunks.get(0));
         }
         return null;
     }
@@ -258,17 +260,18 @@ public final class SipRoutingAsyncClient {
     /**
      * Deletes SIP Trunk Route.
      *
-     * @param route SIP Trunk Route.
+     * @param name SIP Trunk Route name.
      * @return deleted SIP Trunk Route or null.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
-    public Mono<TrunkRoute> deleteRoute(TrunkRoute route) {
+    public Mono<TrunkRoute> deleteRoute(String name) {
         List<TrunkRoute> routes = getRoutes().block();
-        Integer deleteIndex = findIndex(routes, route);
+        List<TrunkRoute> deletedRoutes = routes.stream().filter(trunk -> name.equals(trunk.getName()))
+            .collect(Collectors.toList());
 
-        if (deleteIndex != null) {
-            final TrunkRoute removedRoute = routes.remove((int)deleteIndex);
-            return setRoutes(routes).map(storedRoutes -> removedRoute);
+        if (!deletedRoutes.isEmpty()) {
+            return setRoutes(routes.stream().filter(trunk -> !name.equals(trunk.getName()))
+                .collect(Collectors.toList())).map(storedTrunks -> deletedRoutes.get(0));
         }
         return null;
     }
