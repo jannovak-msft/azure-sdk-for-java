@@ -18,6 +18,7 @@ npm install -g autorest
 ### Generation
 ```ps
 cd <swagger-folder>
+mvn install
 autorest README-siprouting.md --java --v4 --use=@autorest/java@4.0.40
 ```
 
@@ -43,6 +44,7 @@ generate-client-as-impl: true
 sync-methods: all
 context-client-method-parameter: true
 add-context-parameter: true
+customization-class: src/main/java/SipRoutingCustomizations.java
 ```
 
 ### Use SipConfiguration instead of SipConfigurationPatch
