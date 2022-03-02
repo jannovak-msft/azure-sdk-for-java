@@ -7,7 +7,6 @@ import com.azure.communication.phonenumbers.siprouting.models.TrunkRoute;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.Arrays.asList;
@@ -16,8 +15,10 @@ import static java.util.Arrays.asList;
  * Update SIP routing configuration example.
  */
 public class SetExample {
-    private static final String CONNECTION_STRING
-        = "endpoint=https://RESOURCE_NAME.communication.azure.com/;accesskey=SECRET";
+    private static final String CONNECTION_STRING = "endpoint=https://test-jannovak.communication.azure.com/;accesskey=A58V9gbYUus4cx1SvEF1QprJCqo9a2uy6aRtkpZ+2Zy4Khh/RNFZMoFMMZ1IFTwDa2Zqb3m9fbDPCe295kDXHw==";
+
+//    private static final String CONNECTION_STRING
+//        = "endpoint=https://RESOURCE_NAME.communication.azure.com/;accesskey=SECRET";
 
     private static final String TRUNK_FQDN = "trunk.mysite.com";
     private static final int TRUNK_SIP_SIGNALING_PORT = 1234;

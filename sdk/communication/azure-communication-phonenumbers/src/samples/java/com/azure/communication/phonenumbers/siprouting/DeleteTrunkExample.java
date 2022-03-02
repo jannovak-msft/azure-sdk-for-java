@@ -3,35 +3,34 @@
 package com.azure.communication.phonenumbers.siprouting;
 
 import com.azure.communication.phonenumbers.siprouting.models.Trunk;
-import com.azure.communication.phonenumbers.siprouting.models.TrunkRoute;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.List;
 
 /**
- * Get SIP routing configuration example.
+ * Update SIP routing configuration example.
  */
-public class GetExample {
+public class DeleteTrunkExample {
     private static final String CONNECTION_STRING = "endpoint=https://test-jannovak.communication.azure.com/;accesskey=A58V9gbYUus4cx1SvEF1QprJCqo9a2uy6aRtkpZ+2Zy4Khh/RNFZMoFMMZ1IFTwDa2Zqb3m9fbDPCe295kDXHw==";
 
 //    private static final String CONNECTION_STRING
 //        = "endpoint=https://RESOURCE_NAME.communication.azure.com/;accesskey=SECRET";
 
+    private static final String TRUNK_FQDN = "trunk1.mysite.com";
+
     private static final ObjectMapper MAPPER = new ObjectMapper();
 
     public static void main(String[] args) {
         SipRoutingClient client = new SipRoutingClientBuilder().connectionString(CONNECTION_STRING).buildClient();
-        List<Trunk> trunks = client.getTrunks();
-        List<TrunkRoute> routes = client.getRoutes();
-        print(trunks, routes);
+        print(client.getTrunks());
+        Trunk trunk = client.deleteTrunk(TRUNK_FQDN);
+        print(client.getTrunks());
     }
 
-    private static void print(List<Trunk> trunks, List<TrunkRoute> routes) {
+    private static void print(List<Trunk> trunks) {
         try {
-            System.out.printf("SIP Trunks: %s%nSIP Trunk Routes: %s%n",
-                MAPPER.writeValueAsString(trunks),
-                MAPPER.writeValueAsString(routes));
+            System.out.printf("SIP Trunks: %s%n", MAPPER.writeValueAsString(trunks));
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
