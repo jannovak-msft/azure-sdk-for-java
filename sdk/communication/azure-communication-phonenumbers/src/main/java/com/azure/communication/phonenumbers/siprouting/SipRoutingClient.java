@@ -19,7 +19,9 @@ import com.azure.core.http.rest.Response;
 import com.azure.core.http.rest.SimpleResponse;
 import com.azure.core.util.Context;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -40,8 +42,7 @@ public final class SipRoutingClient {
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public List<Trunk> getTrunks() {
-        SipConfiguration configuration = getSipConfiguration();
-        return TrunkConverter.convert(configuration.getTrunks());
+        return TrunkConverter.convert(getSipConfiguration().getTrunks());
     }
 
     /**
@@ -66,8 +67,8 @@ public final class SipRoutingClient {
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public List<Trunk> setTrunks(List<Trunk> trunks) {
-        SipConfiguration configuration = setSipConfiguration(new SipConfiguration(TrunkConverter.convert(trunks)));
-        return TrunkConverter.convert(configuration.getTrunks());
+        SipConfiguration update = new SipConfiguration().setTrunks(TrunkConverter.convert(trunks));
+        return TrunkConverter.convert(setSipConfiguration(update).getTrunks());
     }
 
     /**
@@ -79,7 +80,8 @@ public final class SipRoutingClient {
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Response<List<Trunk>> setTrunksWithResponse(List<Trunk> trunks, Context context) {
-        return client.patchSipConfigurationWithResponseAsync(new SipConfiguration(TrunkConverter.convert(trunks)), context)
+        SipConfiguration update = new SipConfiguration().setTrunks(TrunkConverter.convert(trunks));
+        return client.patchSipConfigurationWithResponseAsync(update, context)
             .map(result -> new SimpleResponse<>(result, TrunkConverter.convert(result.getValue().getTrunks())))
             .block();
     }
@@ -93,16 +95,15 @@ public final class SipRoutingClient {
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Trunk setTrunk(Trunk trunk) {
-        List<Trunk> trunks = getTrunks();
-        Integer setIndex = findIndex(trunks, trunk);
-        if (setIndex != null) {
-            trunks.set(setIndex, trunk);
-            return setTrunks(trunks).get(setIndex);
-        } else {
-            trunks.add(trunk);
-            // todo
-            return setTrunks(trunks).get(trunks.size() - 1);
-        }
+        Map<String, com.azure.communication.phonenumbers.siprouting.implementation.models.Trunk> trunks = new HashMap<>();
+        trunks.put(trunk.getFqdn(), TrunkConverter.convert(trunk));
+        return client.patchSipConfigurationAsync(new SipConfiguration().setTrunks(trunks))
+            .map(result -> {
+                List<Trunk> filteredTrunks = TrunkConverter.convert(result.getTrunks()).stream()
+                    .filter(value -> value.getFqdn().equals(trunk.getFqdn()))
+                    .collect(Collectors.toList());
+                return filteredTrunks.isEmpty() ? null : filteredTrunks.get(0);
+            }).block();
     }
 
     /**
@@ -115,17 +116,11 @@ public final class SipRoutingClient {
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Response<Trunk> setTrunkWithResponse(Trunk trunk, Context context) {
-        List<Trunk> trunks = getTrunks();
-        Integer setIndex = findIndex(trunks, trunk);
-        if (setIndex != null) {
-            trunks.set(setIndex, trunk);
-        } else {
-            trunks.add(trunk);
-        }
-
-        return client.patchSipConfigurationWithResponseAsync(new SipConfiguration(TrunkConverter.convert(trunks)), context)
-            .map(result -> new SimpleResponse<>(result, trunk))
-            .block();
+        Map<String, com.azure.communication.phonenumbers.siprouting.implementation.models.Trunk> trunks = new HashMap<>();
+        trunks.put(trunk.getFqdn(), TrunkConverter.convert(trunk));
+        SipConfiguration update = new SipConfiguration().setTrunks(trunks);
+        return client.patchSipConfigurationWithResponseAsync(update, context)
+            .map(result -> new SimpleResponse<>(result, trunk)).block();
     }
 
     /**
@@ -137,37 +132,37 @@ public final class SipRoutingClient {
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Trunk deleteTrunk(String fqdn) {
         List<Trunk> trunks = getTrunks();
-        List<Trunk> deletedTrunks = trunks.stream().filter(trunk -> fqdn.equals(trunk.getFqdn()))
+        List<Trunk> deletedTrunks = trunks.stream()
+            .filter(trunk -> fqdn.equals(trunk.getFqdn()))
             .collect(Collectors.toList());
 
         if (!deletedTrunks.isEmpty()) {
-            setTrunks(trunks.stream().filter(trunk -> !fqdn.equals(trunk.getFqdn()))
-                .collect(Collectors.toList()));
+            Map<String, com.azure.communication.phonenumbers.siprouting.implementation.models.Trunk> trunksUpdate = new HashMap<>();
+            trunksUpdate.put(fqdn, null);
+            client.patchSipConfiguration(new SipConfiguration().setTrunks(trunksUpdate));
             return deletedTrunks.get(0);
         }
-
         return null;
     }
 
     /**
      * Deletes SIP Trunk.
      *
-     * @param trunk SIP Trunk.
+     * @param fqdn SIP Trunk FQDN.
      * @param context the context of the request. Can also be null or Context.NONE.
      * @return Response object with the SIP Trunk.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
-    public Response<Trunk> deleteTrunkWithResponse(Trunk trunk, Context context) {
+    public Response<Trunk> deleteTrunkWithResponse(String fqdn, Context context) {
         List<Trunk> trunks = getTrunks();
-        Integer deleteIndex = findIndex(trunks, trunk);
+        List<Trunk> deletedTrunks = trunks.stream().filter(trunk -> fqdn.equals(trunk.getFqdn()))
+            .collect(Collectors.toList());
 
-        if (deleteIndex != null) {
-            Trunk removedTrunk = trunks.remove((int)deleteIndex);
-            setTrunksWithResponse(trunks, context);
-
-            return client.patchSipConfigurationWithResponseAsync(new SipConfiguration(TrunkConverter.convert(trunks)), context)
-                .map(result -> new SimpleResponse<>(result, removedTrunk))
-                .block();
+        if (!deletedTrunks.isEmpty()) {
+            Map<String, com.azure.communication.phonenumbers.siprouting.implementation.models.Trunk> trunksUpdate = new HashMap<>();
+            trunksUpdate.put(fqdn, null);
+            return client.patchSipConfigurationWithResponseAsync(new SipConfiguration().setTrunks(trunksUpdate), context)
+                .map(result -> new SimpleResponse<>(result, deletedTrunks.get(0))).block();
         }
         return null;
     }
@@ -179,8 +174,7 @@ public final class SipRoutingClient {
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public List<TrunkRoute> getRoutes() {
-        SipConfiguration configuration = getSipConfiguration();
-        return configuration.getRoutes();
+        return getSipConfiguration().getRoutes();
     }
 
     /**
@@ -205,8 +199,7 @@ public final class SipRoutingClient {
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public List<TrunkRoute> setRoutes(List<TrunkRoute> routes) {
-        SipConfiguration configuration = setSipConfiguration(new SipConfiguration(routes));
-        return configuration.getRoutes();
+        return setSipConfiguration(new SipConfiguration().setRoutes(routes)).getRoutes();
     }
 
     /**
@@ -218,7 +211,7 @@ public final class SipRoutingClient {
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Response<List<TrunkRoute>> setRoutesWithResponse(List<TrunkRoute> routes, Context context) {
-        return client.patchSipConfigurationWithResponseAsync(new SipConfiguration(routes), context)
+        return client.patchSipConfigurationWithResponseAsync(new SipConfiguration().setRoutes(routes), context)
             .map(result -> new SimpleResponse<>(result, result.getValue().getRoutes()))
             .block();
     }
@@ -236,12 +229,11 @@ public final class SipRoutingClient {
         Integer setIndex = findIndex(routes, route);
         if (setIndex != null) {
             routes.set(setIndex, route);
-            return setRoutes(routes).get(setIndex);
         } else {
             routes.add(route);
-            // todo
-            return setRoutes(routes).get(routes.size() - 1);
+            setIndex = routes.size() - 1;
         }
+        return setRoutes(routes).get(setIndex);
     }
 
     /**
@@ -258,13 +250,19 @@ public final class SipRoutingClient {
         Integer setIndex = findIndex(routes, route);
         if (setIndex != null) {
             routes.set(setIndex, route);
+            return client.patchSipConfigurationWithResponseAsync(new SipConfiguration().setRoutes(routes), context)
+                .map(result -> new SimpleResponse<>(result, result.getValue().getRoutes().get(setIndex)))
+                .block();
         } else {
             routes.add(route);
+            return client.patchSipConfigurationWithResponseAsync(new SipConfiguration().setRoutes(routes), context)
+                .map(result -> {
+                    List<TrunkRoute> storedRoutes = result.getValue().getRoutes();
+                    return new SimpleResponse<>(result, storedRoutes.get(storedRoutes.size() - 1));
+                })
+                .block();
         }
 
-        return client.patchSipConfigurationWithResponseAsync(new SipConfiguration(routes), context)
-            .map(result -> new SimpleResponse<>(result, route))
-            .block();
     }
 
     /**
@@ -276,36 +274,38 @@ public final class SipRoutingClient {
     @ServiceMethod(returns = ReturnType.SINGLE)
     public TrunkRoute deleteRoute(String name) {
         List<TrunkRoute> routes = getRoutes();
-        List<TrunkRoute> deletedRoutes = routes.stream().filter(route -> name.equals(route.getName()))
+        List<TrunkRoute> deletedRoutes = routes.stream()
+            .filter(route -> name.equals(route.getName()))
             .collect(Collectors.toList());
 
         if (!deletedRoutes.isEmpty()) {
-            setRoutes(routes.stream().filter(route -> !name.equals(route.getName()))
+            setRoutes(routes.stream()
+                .filter(route -> !name.equals(route.getName()))
                 .collect(Collectors.toList()));
             return deletedRoutes.get(0);
         }
-
         return null;
     }
 
     /**
      * Deletes SIP Trunk Route.
      *
-     * @param route SIP Trunk Route.
+     * @param name SIP Trunk Route name.
      * @param context the context of the request. Can also be null or Context.NONE.
      * @return Response object with the SIP Trunk Route.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
-    public Response<TrunkRoute> deleteRouteWithResponse(TrunkRoute route, Context context) {
+    public Response<TrunkRoute> deleteRouteWithResponse(String name, Context context) {
         List<TrunkRoute> routes = getRoutes();
-        Integer deleteIndex = findIndex(routes, route);
+        List<TrunkRoute> deletedRoutes = routes.stream()
+            .filter(route -> route.getName().equals(name))
+            .collect(Collectors.toList());
 
-        if (deleteIndex != null) {
-            TrunkRoute removedRoute = routes.remove((int)deleteIndex);
-            setRoutesWithResponse(routes, context);
-
-            return client.patchSipConfigurationWithResponseAsync(new SipConfiguration(routes), context)
-                .map(result -> new SimpleResponse<>(result, removedRoute))
+        if (!deletedRoutes.isEmpty()) {
+            List<TrunkRoute> filteredRoutes = routes.stream().filter(route -> !name.equals(route.getName()))
+                .collect(Collectors.toList());
+            return client.patchSipConfigurationWithResponseAsync(new SipConfiguration().setRoutes(filteredRoutes), context)
+                .map(result -> new SimpleResponse<>(result, deletedRoutes.get(0)))
                 .block();
         }
         return null;
@@ -335,16 +335,6 @@ public final class SipRoutingClient {
         for (int i = 0, routesSize = routes.size(); i < routesSize; i++) {
             TrunkRoute storedRoute = routes.get(i);
             if (route.getName() != null && route.getName().equals(storedRoute.getName())) {
-                return i;
-            }
-        }
-        return null;
-    }
-
-    private Integer findIndex(List<Trunk> trunks, Trunk trunk) {
-        for (int i = 0, trunksSize = trunks.size(); i < trunksSize; i++) {
-            Trunk storedTrunk = trunks.get(i);
-            if (trunk.getFqdn() != null && trunk.getFqdn().equals(storedTrunk.getFqdn())) {
                 return i;
             }
         }
