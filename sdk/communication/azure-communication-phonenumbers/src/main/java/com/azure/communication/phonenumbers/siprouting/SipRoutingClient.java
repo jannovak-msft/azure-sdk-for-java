@@ -22,6 +22,7 @@ import com.azure.core.util.Context;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -68,6 +69,14 @@ public final class SipRoutingClient {
     @ServiceMethod(returns = ReturnType.SINGLE)
     public List<Trunk> setTrunks(List<Trunk> trunks) {
         SipConfiguration update = new SipConfiguration().setTrunks(TrunkConverter.convert(trunks));
+        List<String> storedFqdns = getTrunks().stream().map(Trunk::getFqdn).collect(Collectors.toList());
+        Set<String> updatedFqdns = trunks.stream().map(Trunk::getFqdn).collect(Collectors.toSet());
+        for (String storedFqdn : storedFqdns) {
+            if (!updatedFqdns.contains(storedFqdn)) {
+                update.getTrunks().put(storedFqdn, null);
+            }
+        }
+
         return TrunkConverter.convert(setSipConfiguration(update).getTrunks());
     }
 
@@ -81,6 +90,14 @@ public final class SipRoutingClient {
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Response<List<Trunk>> setTrunksWithResponse(List<Trunk> trunks, Context context) {
         SipConfiguration update = new SipConfiguration().setTrunks(TrunkConverter.convert(trunks));
+        List<String> storedFqdns = getTrunks().stream().map(Trunk::getFqdn).collect(Collectors.toList());
+        Set<String> updatedFqdns = trunks.stream().map(Trunk::getFqdn).collect(Collectors.toSet());
+        for (String storedFqdn : storedFqdns) {
+            if (!updatedFqdns.contains(storedFqdn)) {
+                update.getTrunks().put(storedFqdn, null);
+            }
+        }
+
         return client.patchSipConfigurationWithResponseAsync(update, context)
             .map(result -> new SimpleResponse<>(result, TrunkConverter.convert(result.getValue().getTrunks())))
             .block();
