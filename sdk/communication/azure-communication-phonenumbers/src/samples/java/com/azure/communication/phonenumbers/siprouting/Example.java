@@ -48,11 +48,11 @@ public class Example {
         client.setTrunk(new Trunk().setFqdn("sbc.one.domain.com").setSipSignalingPort(1234));
 
         // Update a route
-        client.setRoute(new TrunkRoute()
-            .setName("second route name")
-            .setNumberPattern("123.*")
-            .setTrunks(asList("sbc.two.domain.com"))
-        );
+//        client.setRoute(new TrunkRoute()
+//            .setName("second route name")
+//            .setNumberPattern("123.*")
+//            .setTrunks(asList("sbc.two.domain.com"))
+//        );
 
         // Get
         List<Trunk> trunks = client.getTrunks();

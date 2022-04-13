@@ -192,22 +192,22 @@ public class ReadmeSamples {
         return trunk;
     }
 
-    /**
-     * Sample code for deleting a SIP trunk route.
-     *
-     * @return the deleted SIP trunk route.
-     */
-    public TrunkRoute deleteRoute() {
-        SipRoutingClient sipRoutingClient = createSipRoutingClient();
-
-        // BEGIN: readme-sample-deleteRoute
-        TrunkRoute route = sipRoutingClient.deleteRoute("route name1");
-        System.out.println("Deleted route name: " + route.getName());
-        System.out.println("Deleted route description: " + route.getDescription());
-        System.out.println("Deleted route number pattern: " + route.getNumberPattern());
-        System.out.println("Deleted route trunks: " + String.join(",", route.getTrunks()));
-        // END: readme-sample-deleteRoute
-
-        return route;
-    }
+//    /**
+//     * Sample code for deleting a SIP trunk route.
+//     *
+//     * @return the deleted SIP trunk route.
+//     */
+//    public TrunkRoute deleteRoute() {
+//        SipRoutingClient sipRoutingClient = createSipRoutingClient();
+//
+//        // BEGIN: readme-sample-deleteRoute
+//        TrunkRoute route = sipRoutingClient.deleteRoute("route name1");
+//        System.out.println("Deleted route name: " + route.getName());
+//        System.out.println("Deleted route description: " + route.getDescription());
+//        System.out.println("Deleted route number pattern: " + route.getNumberPattern());
+//        System.out.println("Deleted route trunks: " + String.join(",", route.getTrunks()));
+//        // END: readme-sample-deleteRoute
+//
+//        return route;
+//    }
 }
