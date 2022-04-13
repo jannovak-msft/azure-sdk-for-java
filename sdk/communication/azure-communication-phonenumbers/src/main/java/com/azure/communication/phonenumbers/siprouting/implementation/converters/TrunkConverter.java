@@ -16,7 +16,7 @@ import java.util.Map;
  */
 public final class TrunkConverter {
     /**
-     * Maps from {@link Map<String,com.azure.communication.phonenumbers.siprouting.implementation.models.Trunk>} to {@link List<Trunk>}.
+     * Maps from {@link Map} to {@link List}.
      */
     public static List<Trunk> convert(Map<String, com.azure.communication.phonenumbers.siprouting.implementation.models.Trunk> obj) {
         if (obj == null) {
@@ -43,7 +43,7 @@ public final class TrunkConverter {
     }
 
     /**
-     * Maps from {@link List<Trunk>} to {@link Map<String,com.azure.communication.phonenumbers.siprouting.implementation.models.Trunk>}.
+     * Maps from {@link List} to {@link Map}.
      */
     public static Map<String, com.azure.communication.phonenumbers.siprouting.implementation.models.Trunk> convert(List<Trunk> obj) {
         if (obj == null) {

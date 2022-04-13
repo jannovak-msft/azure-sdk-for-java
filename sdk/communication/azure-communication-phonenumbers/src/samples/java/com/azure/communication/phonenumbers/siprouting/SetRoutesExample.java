@@ -2,7 +2,6 @@
 // Licensed under the MIT License.
 package com.azure.communication.phonenumbers.siprouting;
 
-import com.azure.communication.phonenumbers.siprouting.models.Trunk;
 import com.azure.communication.phonenumbers.siprouting.models.TrunkRoute;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
