@@ -41,6 +41,30 @@ public class ReadmeSamples {
     }
 
     /**
+     * Sample code for creating an async SIP Routing Client.
+     *
+     * @return the SIP Routing Client.
+     */
+    public SipRoutingAsyncClient createSipRoutingAsyncClient() {
+        // BEGIN: readme-sample-createSipRoutingAsyncClient
+        // You can find your endpoint and access token from your resource in the Azure Portal
+        String endpoint = "https://<RESOURCE_NAME>.communication.azure.com";
+        AzureKeyCredential keyCredential = new AzureKeyCredential("SECRET");
+
+        // Create an HttpClient builder of your choice and customize it
+        HttpClient httpClient = new NettyAsyncHttpClientBuilder().build();
+
+        SipRoutingAsyncClient sipRoutingClient = new SipRoutingClientBuilder()
+            .endpoint(endpoint)
+            .credential(keyCredential)
+            .httpClient(httpClient)
+            .buildAsyncClient();
+        // END: readme-sample-createSipRoutingAsyncClient
+
+        return sipRoutingClient;
+    }
+
+    /**
      * Sample code for creating a sync SIP Routing Client using AAD authentication.
      *
      * @return the SIP Routing Client.
