@@ -55,8 +55,8 @@ public class Example {
 //        );
 
         // Get
-        List<Trunk> trunks = client.getTrunks();
-        List<TrunkRoute> routes = client.getRoutes();
+        List<Trunk> trunks = client.listTrunks();
+        List<TrunkRoute> routes = client.listRoutes();
         print(trunks, routes);
     }
 

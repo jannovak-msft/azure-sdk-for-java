@@ -37,23 +37,23 @@ public final class SipRoutingClient {
     }
 
     /**
-     * Gets SIP Trunks.
+     * Lists SIP Trunks.
      *
      * @return SIP Trunks.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
-    public List<Trunk> getTrunks() {
+    public List<Trunk> listTrunks() {
         return TrunkConverter.convert(getSipConfiguration().getTrunks());
     }
 
     /**
-     * Gets SIP Trunks.
+     * Lists SIP Trunks.
      *
      * @param context the context of the request. Can also be null or Context.NONE.
      * @return Response object with the SIP Trunks.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
-    public Response<List<Trunk>> getTrunksWithResponse(Context context) {
+    public Response<List<Trunk>> listTrunksWithResponse(Context context) {
         return client.getSipConfigurationWithResponseAsync(context)
             .onErrorMap(CommunicationErrorResponseException.class, this::translateException)
             .map(result -> new SimpleResponse<>(result, TrunkConverter.convert(result.getValue().getTrunks())))
@@ -69,7 +69,7 @@ public final class SipRoutingClient {
     @ServiceMethod(returns = ReturnType.SINGLE)
     public List<Trunk> setTrunks(List<Trunk> trunks) {
         SipConfiguration update = new SipConfiguration().setTrunks(TrunkConverter.convert(trunks));
-        List<String> storedFqdns = getTrunks().stream().map(Trunk::getFqdn).collect(Collectors.toList());
+        List<String> storedFqdns = listTrunks().stream().map(Trunk::getFqdn).collect(Collectors.toList());
         Set<String> updatedFqdns = trunks.stream().map(Trunk::getFqdn).collect(Collectors.toSet());
         for (String storedFqdn : storedFqdns) {
             if (!updatedFqdns.contains(storedFqdn)) {
@@ -90,7 +90,7 @@ public final class SipRoutingClient {
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Response<List<Trunk>> setTrunksWithResponse(List<Trunk> trunks, Context context) {
         SipConfiguration update = new SipConfiguration().setTrunks(TrunkConverter.convert(trunks));
-        List<String> storedFqdns = getTrunks().stream().map(Trunk::getFqdn).collect(Collectors.toList());
+        List<String> storedFqdns = listTrunks().stream().map(Trunk::getFqdn).collect(Collectors.toList());
         Set<String> updatedFqdns = trunks.stream().map(Trunk::getFqdn).collect(Collectors.toSet());
         for (String storedFqdn : storedFqdns) {
             if (!updatedFqdns.contains(storedFqdn)) {
@@ -148,7 +148,7 @@ public final class SipRoutingClient {
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Trunk deleteTrunk(String fqdn) {
-        List<Trunk> trunks = getTrunks();
+        List<Trunk> trunks = listTrunks();
         List<Trunk> deletedTrunks = trunks.stream()
             .filter(trunk -> fqdn.equals(trunk.getFqdn()))
             .collect(Collectors.toList());
@@ -171,7 +171,7 @@ public final class SipRoutingClient {
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Response<Trunk> deleteTrunkWithResponse(String fqdn, Context context) {
-        List<Trunk> trunks = getTrunks();
+        List<Trunk> trunks = listTrunks();
         List<Trunk> deletedTrunks = trunks.stream().filter(trunk -> fqdn.equals(trunk.getFqdn()))
             .collect(Collectors.toList());
 
@@ -185,23 +185,23 @@ public final class SipRoutingClient {
     }
 
     /**
-     * Gets SIP Trunk Routes.
+     * Lists SIP Trunk Routes.
      *
      * @return SIP Trunk Routes.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
-    public List<TrunkRoute> getRoutes() {
+    public List<TrunkRoute> listRoutes() {
         return getSipConfiguration().getRoutes();
     }
 
     /**
-     * Gets SIP Trunk Routes.
+     * Lists SIP Trunk Routes.
      *
      * @param context the context of the request. Can also be null or Context.NONE.
      * @return Response object with the SIP Trunk Routes.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
-    public Response<List<TrunkRoute>> getRoutesWithResponse(Context context) {
+    public Response<List<TrunkRoute>> listRoutesWithResponse(Context context) {
         return client.getSipConfigurationWithResponseAsync(context)
             .onErrorMap(CommunicationErrorResponseException.class, this::translateException)
             .map(result -> new SimpleResponse<>(result, result.getValue().getRoutes()))

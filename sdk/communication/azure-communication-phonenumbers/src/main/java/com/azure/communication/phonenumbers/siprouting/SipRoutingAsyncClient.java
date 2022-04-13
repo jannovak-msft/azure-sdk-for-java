@@ -36,22 +36,22 @@ public final class SipRoutingAsyncClient {
     }
 
     /**
-     * Gets SIP Trunks.
+     * Lists SIP Trunks.
      *
      * @return SIP Trunks.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
-    public Mono<List<Trunk>> getTrunks() {
+    public Mono<List<Trunk>> listTrunks() {
         return getSipConfiguration().map(config -> TrunkConverter.convert(config.getTrunks()));
     }
 
     /**
-     * Gets SIP Trunks.
+     * Lists SIP Trunks.
      *
      * @return Response object with the SIP Trunks.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
-    public Mono<Response<List<Trunk>>> getTrunksWithResponse() {
+    public Mono<Response<List<Trunk>>> listTrunksWithResponse() {
         return client.getSipConfigurationWithResponseAsync()
             .onErrorMap(CommunicationErrorResponseException.class, this::translateException)
             .map(result -> new SimpleResponse<>(result, TrunkConverter.convert(result.getValue().getTrunks())));
@@ -126,7 +126,7 @@ public final class SipRoutingAsyncClient {
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<Trunk> deleteTrunk(String fqdn) {
-        List<Trunk> trunks = getTrunks().block();
+        List<Trunk> trunks = listTrunks().block();
         List<Trunk> deletedTrunks = trunks.stream()
             .filter(trunk -> fqdn.equals(trunk.getFqdn()))
             .collect(Collectors.toList());
@@ -148,7 +148,7 @@ public final class SipRoutingAsyncClient {
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<Response<Trunk>> deleteTrunkWithResponse(String fqdn) {
-        List<Trunk> trunks = getTrunks().block();
+        List<Trunk> trunks = listTrunks().block();
         List<Trunk> deletedTrunks = trunks.stream().filter(trunk -> fqdn.equals(trunk.getFqdn()))
             .collect(Collectors.toList());
 
@@ -162,22 +162,22 @@ public final class SipRoutingAsyncClient {
     }
 
     /**
-     * Gets SIP Trunk Routes.
+     * Lists SIP Trunk Routes.
      *
      * @return SIP Trunk Routes.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
-    public Mono<List<TrunkRoute>> getRoutes() {
+    public Mono<List<TrunkRoute>> listRoutes() {
         return getSipConfiguration().map(SipConfiguration::getRoutes);
     }
 
     /**
-     * Gets SIP Trunk Routes.
+     * Lists SIP Trunk Routes.
      *
      * @return Response object with the SIP Trunk Routes.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
-    public Mono<Response<List<TrunkRoute>>> getRoutesWithResponse() {
+    public Mono<Response<List<TrunkRoute>>> listRoutesWithResponse() {
         return client.getSipConfigurationWithResponseAsync()
             .onErrorMap(CommunicationErrorResponseException.class, this::translateException)
             .map(result -> new SimpleResponse<>(result, result.getValue().getRoutes()));
@@ -222,15 +222,5 @@ public final class SipRoutingAsyncClient {
             error = SipRoutingErrorConverter.convert(exception.getValue().getError());
         }
         return new SipRoutingResponseException(exception.getMessage(), exception.getResponse(), error);
-    }
-
-    private Integer findIndex(List<TrunkRoute> routes, TrunkRoute route) {
-        for (int i = 0, routesSize = routes.size(); i < routesSize; i++) {
-            TrunkRoute storedRoute = routes.get(i);
-            if (route.getName() != null && route.getName().equals(storedRoute.getName())) {
-                return i;
-            }
-        }
-        return null;
     }
 }
