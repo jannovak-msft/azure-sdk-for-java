@@ -9,7 +9,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 /** Represents a SIP trunk for routing calls. See RFC 4904. */
 @Fluent
-public final class Trunk {
+public final class SipTrunk {
     /*
      * Gets or sets SIP signaling port of the trunk.
      */
@@ -29,9 +29,9 @@ public final class Trunk {
      * Set the sipSignalingPort property: Gets or sets SIP signaling port of the trunk.
      *
      * @param sipSignalingPort the sipSignalingPort value to set.
-     * @return the Trunk object itself.
+     * @return the SipTrunk object itself.
      */
-    public Trunk setSipSignalingPort(int sipSignalingPort) {
+    public SipTrunk setSipSignalingPort(int sipSignalingPort) {
         this.sipSignalingPort = sipSignalingPort;
         return this;
     }

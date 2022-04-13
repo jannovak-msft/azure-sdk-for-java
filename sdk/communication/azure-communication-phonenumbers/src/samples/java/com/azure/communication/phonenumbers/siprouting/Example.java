@@ -2,8 +2,8 @@
 // Licensed under the MIT License.
 package com.azure.communication.phonenumbers.siprouting;
 
-import com.azure.communication.phonenumbers.siprouting.models.Trunk;
-import com.azure.communication.phonenumbers.siprouting.models.TrunkRoute;
+import com.azure.communication.phonenumbers.siprouting.models.SipTrunk;
+import com.azure.communication.phonenumbers.siprouting.models.SipTrunkRoute;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -28,24 +28,24 @@ public class Example {
 
         // Set trunks
         client.setTrunks(asList(
-            new Trunk().setFqdn("sbc.one.domain.com").setSipSignalingPort(5678),
-            new Trunk().setFqdn("sbc.two.domain.com").setSipSignalingPort(5678)
+            new SipTrunk().setFqdn("sbc.one.domain.com").setSipSignalingPort(5678),
+            new SipTrunk().setFqdn("sbc.two.domain.com").setSipSignalingPort(5678)
         ));
 
         // Set routes
         client.setRoutes(asList(
-            new TrunkRoute()
+            new SipTrunkRoute()
                 .setName("first route name")
                 .setNumberPattern("[1-9][0-9]{3,23}")
                 .setTrunks(asList("sbc.one.domain.com")),
-            new TrunkRoute()
+            new SipTrunkRoute()
                 .setName("second route name")
                 .setNumberPattern(".*")
                 .setTrunks(asList("sbc.two.domain.com", "sbc.one.domain.com"))
         ));
 
         // Update a trunk
-        client.setTrunk(new Trunk().setFqdn("sbc.one.domain.com").setSipSignalingPort(1234));
+        client.setTrunk(new SipTrunk().setFqdn("sbc.one.domain.com").setSipSignalingPort(1234));
 
         // Update a route
 //        client.setRoute(new TrunkRoute()
@@ -55,12 +55,12 @@ public class Example {
 //        );
 
         // Get
-        List<Trunk> trunks = client.listTrunks();
-        List<TrunkRoute> routes = client.listRoutes();
+        List<SipTrunk> trunks = client.listTrunks();
+        List<SipTrunkRoute> routes = client.listRoutes();
         print(trunks, routes);
     }
 
-    private static void print(List<Trunk> trunks, List<TrunkRoute> routes) {
+    private static void print(List<SipTrunk> trunks, List<SipTrunkRoute> routes) {
         try {
             System.out.printf("SIP Trunks: %s%nSIP Trunk Routes: %s%n",
                 MAPPER.writeValueAsString(trunks),

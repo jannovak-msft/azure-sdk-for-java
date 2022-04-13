@@ -2,7 +2,7 @@
 // Licensed under the MIT License.
 package com.azure.communication.phonenumbers.siprouting;
 
-import com.azure.communication.phonenumbers.siprouting.models.TrunkRoute;
+import com.azure.communication.phonenumbers.siprouting.models.SipTrunkRoute;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -28,18 +28,18 @@ public class SetRoutesExample {
 
     public static void main(String[] args) {
         SipRoutingClient client = new SipRoutingClientBuilder().connectionString(CONNECTION_STRING).buildClient();
-        List<TrunkRoute> routes = client.setRoutes(prepareRoutes());
+        List<SipTrunkRoute> routes = client.setRoutes(prepareRoutes());
         print(routes);
     }
 
-    private static List<TrunkRoute> prepareRoutes() {
+    private static List<SipTrunkRoute> prepareRoutes() {
         return asList(
-            new TrunkRoute().setName(FIRST_ROUTE_NAME).setNumberPattern(FIRST_ROUTE_PATTERN),
-            new TrunkRoute().setName(SECOND_ROUTE_NAME).setNumberPattern(SECOND_ROUTE_PATTERN)
+            new SipTrunkRoute().setName(FIRST_ROUTE_NAME).setNumberPattern(FIRST_ROUTE_PATTERN),
+            new SipTrunkRoute().setName(SECOND_ROUTE_NAME).setNumberPattern(SECOND_ROUTE_PATTERN)
         );
     }
 
-    private static void print(List<TrunkRoute> routes) {
+    private static void print(List<SipTrunkRoute> routes) {
         try {
             System.out.printf("SIP Trunk Routes: %s%n",
                 MAPPER.writeValueAsString(routes));

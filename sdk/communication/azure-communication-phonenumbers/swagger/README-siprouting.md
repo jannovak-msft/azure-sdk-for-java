@@ -33,7 +33,7 @@ title: Azure Communication Phone Numbers SIP Routing Service
 tag: package-2021-05-01-preview
 input-file: https://raw.githubusercontent.com/Azure/azure-rest-api-specs/3b84377154da23b8b5a011a7c0344f36f56ced16/specification/communication/data-plane/SipRouting/preview/2021-05-01-preview/communicationservicessiprouting.json
 override-client-name: SipRoutingAdminClient
-custom-types: TrunkRoute
+custom-types: SipTrunkRoute
 custom-types-subpackage: models
 models-subpackage: implementation.models
 java: true
@@ -64,4 +64,22 @@ directive:
       transform: >
           delete $.SipConfigurationPatch;
           delete $.TrunkPatch;
+```
+
+### Directive renaming "Trunk" model to "SipTrunk"
+```yaml
+directive:
+    - from: swagger-document
+      where: "$.definitions.Trunk" 
+      transform: >
+          $["x-ms-client-name"] = "SipTrunk";
+```
+
+### Directive renaming "TrunkRoute" model to "SipTrunkRoute"
+```yaml
+directive:
+    - from: swagger-document
+      where: "$.definitions.TrunkRoute" 
+      transform: >
+          $["x-ms-client-name"] = "SipTrunkRoute";
 ```

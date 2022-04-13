@@ -2,7 +2,7 @@
 // Licensed under the MIT License.
 package com.azure.communication.phonenumbers.siprouting;
 
-import com.azure.communication.phonenumbers.siprouting.models.Trunk;
+import com.azure.communication.phonenumbers.siprouting.models.SipTrunk;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -24,11 +24,11 @@ public class DeleteTrunkExample {
     public static void main(String[] args) {
         SipRoutingClient client = new SipRoutingClientBuilder().connectionString(CONNECTION_STRING).buildClient();
         print(client.listTrunks());
-        Trunk trunk = client.deleteTrunk(TRUNK_FQDN);
+        SipTrunk trunk = client.deleteTrunk(TRUNK_FQDN);
         print(client.listTrunks());
     }
 
-    private static void print(List<Trunk> trunks) {
+    private static void print(List<SipTrunk> trunks) {
         try {
             System.out.printf("SIP Trunks: %s%n", MAPPER.writeValueAsString(trunks));
         } catch (JsonProcessingException e) {

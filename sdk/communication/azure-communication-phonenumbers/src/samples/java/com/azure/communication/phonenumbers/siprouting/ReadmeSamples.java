@@ -3,8 +3,8 @@
 
 package com.azure.communication.phonenumbers.siprouting;
 
-import com.azure.communication.phonenumbers.siprouting.models.Trunk;
-import com.azure.communication.phonenumbers.siprouting.models.TrunkRoute;
+import com.azure.communication.phonenumbers.siprouting.models.SipTrunk;
+import com.azure.communication.phonenumbers.siprouting.models.SipTrunkRoute;
 import com.azure.core.credential.AzureKeyCredential;
 import com.azure.core.http.HttpClient;
 import com.azure.core.http.netty.NettyAsyncHttpClientBuilder;
@@ -92,12 +92,12 @@ public class ReadmeSamples {
      *
      * @return the SIP trunks.
      */
-    public List<Trunk> listTrunks() {
+    public List<SipTrunk> listTrunks() {
         SipRoutingClient sipRoutingClient = createSipRoutingClient();
 
         // BEGIN: readme-sample-listTrunks
-        List<Trunk> trunks = sipRoutingClient.listTrunks();
-        for (Trunk trunk : trunks) {
+        List<SipTrunk> trunks = sipRoutingClient.listTrunks();
+        for (SipTrunk trunk : trunks) {
             System.out.println("Trunk FQDN: " + trunk.getFqdn());
             System.out.println("Trunk SIP signaling port: " + trunk.getSipSignalingPort());
         }
@@ -111,12 +111,12 @@ public class ReadmeSamples {
      *
      * @return the SIP trunk routes.
      */
-    public List<TrunkRoute> listRoutes() {
+    public List<SipTrunkRoute> listRoutes() {
         SipRoutingClient sipRoutingClient = createSipRoutingClient();
 
         // BEGIN: readme-sample-listRoutes
-        List<TrunkRoute> routes = sipRoutingClient.listRoutes();
-        for (TrunkRoute route : routes) {
+        List<SipTrunkRoute> routes = sipRoutingClient.listRoutes();
+        for (SipTrunkRoute route : routes) {
             System.out.println("Route name: " + route.getName());
             System.out.println("Route description: " + route.getDescription());
             System.out.println("Route number pattern: " + route.getNumberPattern());
@@ -132,15 +132,15 @@ public class ReadmeSamples {
      *
      * @return the SIP trunks.
      */
-    public List<Trunk> setTrunks() {
+    public List<SipTrunk> setTrunks() {
         SipRoutingClient sipRoutingClient = createSipRoutingClient();
 
         // BEGIN: readme-sample-setTrunks
-        List<Trunk> trunks = sipRoutingClient.setTrunks(asList(
-            new Trunk().setFqdn("trunk1.mysite.com").setSipSignalingPort(12345),
-            new Trunk().setFqdn("trunk2.mysite.com").setSipSignalingPort(23456)
+        List<SipTrunk> trunks = sipRoutingClient.setTrunks(asList(
+            new SipTrunk().setFqdn("trunk1.mysite.com").setSipSignalingPort(12345),
+            new SipTrunk().setFqdn("trunk2.mysite.com").setSipSignalingPort(23456)
         ));
-        for (Trunk trunk : trunks) {
+        for (SipTrunk trunk : trunks) {
             System.out.println("Trunk FQDN: " + trunk.getFqdn());
             System.out.println("Trunk SIP signaling port: " + trunk.getSipSignalingPort());
         }
@@ -154,17 +154,17 @@ public class ReadmeSamples {
      *
      * @return the SIP trunk routes.
      */
-    public List<TrunkRoute> setRoutes() {
+    public List<SipTrunkRoute> setRoutes() {
         SipRoutingClient sipRoutingClient = createSipRoutingClient();
 
         // BEGIN: readme-sample-setRoutes
-        List<TrunkRoute> routes = sipRoutingClient.setRoutes(asList(
-            new TrunkRoute().setName("route name1").setNumberPattern(".*")
+        List<SipTrunkRoute> routes = sipRoutingClient.setRoutes(asList(
+            new SipTrunkRoute().setName("route name1").setNumberPattern(".*")
                 .setTrunks(asList("trunk1.mysite.com", "trunk2.mysite.com")),
-            new TrunkRoute().setName("route name2").setNumberPattern(".*9")
+            new SipTrunkRoute().setName("route name2").setNumberPattern(".*9")
                 .setTrunks(asList("trunk2.mysite.com"))
         ));
-        for (TrunkRoute route : routes) {
+        for (SipTrunkRoute route : routes) {
             System.out.println("Route name: " + route.getName());
             System.out.println("Route description: " + route.getDescription());
             System.out.println("Route number pattern: " + route.getNumberPattern());
@@ -180,11 +180,11 @@ public class ReadmeSamples {
      *
      * @return the deleted SIP trunk.
      */
-    public Trunk deleteTrunk() {
+    public SipTrunk deleteTrunk() {
         SipRoutingClient sipRoutingClient = createSipRoutingClient();
 
         // BEGIN: readme-sample-deleteTrunk
-        Trunk trunk = sipRoutingClient.deleteTrunk("trunk1.mysite.com");
+        SipTrunk trunk = sipRoutingClient.deleteTrunk("trunk1.mysite.com");
         System.out.println("Deleted trunk FQDN: " + trunk.getFqdn());
         System.out.println("Deleted trunk SIP signaling port: " + trunk.getSipSignalingPort());
         // END: readme-sample-deleteTrunk

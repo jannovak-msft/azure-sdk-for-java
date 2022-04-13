@@ -10,7 +10,7 @@ import java.util.List;
 
 /** Represents a trunk route for routing calls. */
 @Fluent
-public final class TrunkRoute {
+public final class SipTrunkRoute {
     /*
      * Gets or sets description of the route.
      */
@@ -53,9 +53,9 @@ public final class TrunkRoute {
      * Set the description property: Gets or sets description of the route.
      *
      * @param description the description value to set.
-     * @return the TrunkRoute object itself.
+     * @return the SipTrunkRoute object itself.
      */
-    public TrunkRoute setDescription(String description) {
+    public SipTrunkRoute setDescription(String description) {
         this.description = description;
         return this;
     }
@@ -73,9 +73,9 @@ public final class TrunkRoute {
      * Set the name property: Gets or sets name of the route.
      *
      * @param name the name value to set.
-     * @return the TrunkRoute object itself.
+     * @return the SipTrunkRoute object itself.
      */
-    public TrunkRoute setName(String name) {
+    public SipTrunkRoute setName(String name) {
         this.name = name;
         return this;
     }
@@ -97,9 +97,9 @@ public final class TrunkRoute {
      * "^\+[1-9][0-9]{3,23}$".
      *
      * @param numberPattern the numberPattern value to set.
-     * @return the TrunkRoute object itself.
+     * @return the SipTrunkRoute object itself.
      */
-    public TrunkRoute setNumberPattern(String numberPattern) {
+    public SipTrunkRoute setNumberPattern(String numberPattern) {
         this.numberPattern = numberPattern;
         return this;
     }
@@ -117,9 +117,9 @@ public final class TrunkRoute {
      * Set the trunks property: Gets or sets list of SIP trunks for routing calls. Trunks are represented as FQDN.
      *
      * @param trunks the trunks value to set.
-     * @return the TrunkRoute object itself.
+     * @return the SipTrunkRoute object itself.
      */
-    public TrunkRoute setTrunks(List<String> trunks) {
+    public SipTrunkRoute setTrunks(List<String> trunks) {
         this.trunks = trunks;
         return this;
     }

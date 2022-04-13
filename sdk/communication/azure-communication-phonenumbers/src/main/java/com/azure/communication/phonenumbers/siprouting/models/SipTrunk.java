@@ -8,7 +8,7 @@ import com.azure.core.annotation.Fluent;
 
 /** Represents a SIP trunk for routing calls. See RFC 4904. */
 @Fluent
-public final class Trunk {
+public final class SipTrunk {
     /*
      * Gets or sets FQDN of the trunk.
      */
@@ -33,7 +33,7 @@ public final class Trunk {
      * @param fqdn the fqdn value to set.
      * @return the Trunk object itself.
      */
-    public Trunk setFqdn(String fqdn) {
+    public SipTrunk setFqdn(String fqdn) {
         this.fqdn = fqdn;
         return this;
     }
@@ -53,7 +53,7 @@ public final class Trunk {
      * @param sipSignalingPort the sipSignalingPort value to set.
      * @return the Trunk object itself.
      */
-    public Trunk setSipSignalingPort(int sipSignalingPort) {
+    public SipTrunk setSipSignalingPort(int sipSignalingPort) {
         this.sipSignalingPort = sipSignalingPort;
         return this;
     }

@@ -2,8 +2,8 @@
 // Licensed under the MIT License.
 package com.azure.communication.phonenumbers.siprouting;
 
-import com.azure.communication.phonenumbers.siprouting.models.Trunk;
-import com.azure.communication.phonenumbers.siprouting.models.TrunkRoute;
+import com.azure.communication.phonenumbers.siprouting.models.SipTrunk;
+import com.azure.communication.phonenumbers.siprouting.models.SipTrunkRoute;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -29,21 +29,21 @@ public class SetExample {
 
     public static void main(String[] args) {
         SipRoutingClient client = new SipRoutingClientBuilder().connectionString(CONNECTION_STRING).buildClient();
-        List<Trunk> trunks = client.setTrunks(prepareTrunks());
-        List<TrunkRoute> routes = client.setRoutes(prepareRoutes());
+        List<SipTrunk> trunks = client.setTrunks(prepareTrunks());
+        List<SipTrunkRoute> routes = client.setRoutes(prepareRoutes());
         print(trunks, routes);
     }
 
-    private static List<Trunk> prepareTrunks() {
-        return asList(new Trunk().setFqdn(TRUNK_FQDN).setSipSignalingPort(TRUNK_SIP_SIGNALING_PORT));
+    private static List<SipTrunk> prepareTrunks() {
+        return asList(new SipTrunk().setFqdn(TRUNK_FQDN).setSipSignalingPort(TRUNK_SIP_SIGNALING_PORT));
     }
 
-    private static List<TrunkRoute> prepareRoutes() {
+    private static List<SipTrunkRoute> prepareRoutes() {
         return asList(
-            new TrunkRoute().setName(ROUTE_NAME).setNumberPattern(ROUTE_PATTERN).setTrunks(asList(TRUNK_FQDN)));
+            new SipTrunkRoute().setName(ROUTE_NAME).setNumberPattern(ROUTE_PATTERN).setTrunks(asList(TRUNK_FQDN)));
     }
 
-    private static void print(List<Trunk> trunks, List<TrunkRoute> routes) {
+    private static void print(List<SipTrunk> trunks, List<SipTrunkRoute> routes) {
         try {
             System.out.printf("SIP Trunks: %s%nSIP Trunk Routes: %s%n",
                 MAPPER.writeValueAsString(trunks),

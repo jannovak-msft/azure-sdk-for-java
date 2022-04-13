@@ -2,7 +2,7 @@
 // Licensed under the MIT License.
 package com.azure.communication.phonenumbers.siprouting;
 
-import com.azure.communication.phonenumbers.siprouting.models.Trunk;
+import com.azure.communication.phonenumbers.siprouting.models.SipTrunk;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -24,15 +24,15 @@ public class SetTrunkExample {
 
     public static void main(String[] args) {
         SipRoutingClient client = new SipRoutingClientBuilder().connectionString(CONNECTION_STRING).buildClient();
-        Trunk trunk = client.setTrunk(prepareTrunk());
+        SipTrunk trunk = client.setTrunk(prepareTrunk());
         print(client.listTrunks());
     }
 
-    private static Trunk prepareTrunk() {
-        return new Trunk().setFqdn(TRUNK_FQDN).setSipSignalingPort(TRUNK_SIP_SIGNALING_PORT);
+    private static SipTrunk prepareTrunk() {
+        return new SipTrunk().setFqdn(TRUNK_FQDN).setSipSignalingPort(TRUNK_SIP_SIGNALING_PORT);
     }
 
-    private static void print(List<Trunk> trunks) {
+    private static void print(List<SipTrunk> trunks) {
         try {
             System.out.printf("SIP Trunks: %s%n", MAPPER.writeValueAsString(trunks));
         } catch (JsonProcessingException e) {

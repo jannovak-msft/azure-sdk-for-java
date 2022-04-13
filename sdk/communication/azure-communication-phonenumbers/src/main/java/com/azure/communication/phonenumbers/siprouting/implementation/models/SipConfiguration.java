@@ -4,7 +4,7 @@
 
 package com.azure.communication.phonenumbers.siprouting.implementation.models;
 
-import com.azure.communication.phonenumbers.siprouting.models.TrunkRoute;
+import com.azure.communication.phonenumbers.siprouting.models.SipTrunkRoute;
 import com.azure.core.annotation.Fluent;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -24,21 +24,21 @@ public final class SipConfiguration {
      */
     @JsonProperty(value = "trunks")
     @JsonInclude(value = JsonInclude.Include.NON_ABSENT)
-    private Map<String, Trunk> trunks;
+    private Map<String, SipTrunk> trunks;
 
     /*
      * Trunk routes for routing calls.
      */
     @JsonProperty(value = "routes")
     @JsonInclude(value = JsonInclude.Include.NON_ABSENT)
-    private List<TrunkRoute> routes;
+    private List<SipTrunkRoute> routes;
 
     /**
      * Get the trunks property: SIP trunks for routing calls. Map key is trunk's FQDN (1-249 characters).
      *
      * @return the trunks value.
      */
-    public Map<String, Trunk> getTrunks() {
+    public Map<String, SipTrunk> getTrunks() {
         return this.trunks;
     }
 
@@ -48,7 +48,7 @@ public final class SipConfiguration {
      * @param trunks the trunks value to set.
      * @return the SipConfiguration object itself.
      */
-    public SipConfiguration setTrunks(Map<String, Trunk> trunks) {
+    public SipConfiguration setTrunks(Map<String, SipTrunk> trunks) {
         this.trunks = trunks;
         return this;
     }
@@ -58,7 +58,7 @@ public final class SipConfiguration {
      *
      * @return the routes value.
      */
-    public List<TrunkRoute> getRoutes() {
+    public List<SipTrunkRoute> getRoutes() {
         return this.routes;
     }
 
@@ -68,7 +68,7 @@ public final class SipConfiguration {
      * @param routes the routes value to set.
      * @return the SipConfiguration object itself.
      */
-    public SipConfiguration setRoutes(List<TrunkRoute> routes) {
+    public SipConfiguration setRoutes(List<SipTrunkRoute> routes) {
         this.routes = routes;
         return this;
     }

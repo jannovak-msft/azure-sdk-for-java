@@ -2,8 +2,8 @@
 // Licensed under the MIT License.
 package com.azure.communication.phonenumbers.siprouting;
 
-import com.azure.communication.phonenumbers.siprouting.models.Trunk;
-import com.azure.communication.phonenumbers.siprouting.models.TrunkRoute;
+import com.azure.communication.phonenumbers.siprouting.models.SipTrunk;
+import com.azure.communication.phonenumbers.siprouting.models.SipTrunkRoute;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -22,12 +22,12 @@ public class GetExample {
 
     public static void main(String[] args) {
         SipRoutingClient client = new SipRoutingClientBuilder().connectionString(CONNECTION_STRING).buildClient();
-        List<Trunk> trunks = client.listTrunks();
-        List<TrunkRoute> routes = client.listRoutes();
+        List<SipTrunk> trunks = client.listTrunks();
+        List<SipTrunkRoute> routes = client.listRoutes();
         print(trunks, routes);
     }
 
-    private static void print(List<Trunk> trunks, List<TrunkRoute> routes) {
+    private static void print(List<SipTrunk> trunks, List<SipTrunkRoute> routes) {
         try {
             System.out.printf("SIP Trunks: %s%nSIP Trunk Routes: %s%n",
                 MAPPER.writeValueAsString(trunks),
