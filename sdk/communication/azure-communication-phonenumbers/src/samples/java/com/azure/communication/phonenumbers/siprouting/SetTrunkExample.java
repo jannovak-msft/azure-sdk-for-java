@@ -29,7 +29,7 @@ public class SetTrunkExample {
     }
 
     private static SipTrunk prepareTrunk() {
-        return new SipTrunk().setFqdn(TRUNK_FQDN).setSipSignalingPort(TRUNK_SIP_SIGNALING_PORT);
+        return new SipTrunk(TRUNK_FQDN, TRUNK_SIP_SIGNALING_PORT);
     }
 
     private static void print(List<SipTrunk> trunks) {

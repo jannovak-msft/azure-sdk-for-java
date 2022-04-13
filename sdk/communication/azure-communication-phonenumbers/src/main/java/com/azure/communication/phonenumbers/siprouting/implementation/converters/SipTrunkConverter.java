@@ -39,7 +39,7 @@ public final class SipTrunkConverter {
             return null;
         }
 
-        return new SipTrunk().setFqdn(fqdn).setSipSignalingPort(obj.getSipSignalingPort());
+        return new SipTrunk(fqdn, obj.getSipSignalingPort());
     }
 
     /**

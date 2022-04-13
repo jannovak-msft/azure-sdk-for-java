@@ -12,11 +12,21 @@ public final class SipTrunk {
     /*
      * Gets or sets FQDN of the trunk.
      */
-    private String fqdn;
+    private final String fqdn;
     /*
      * Gets or sets SIP signaling port of the trunk.
      */
-    private int sipSignalingPort;
+    private final int sipSignalingPort;
+
+    /**
+     * Constructor with required properties.
+     * @param fqdn the FQDN of the trunk.
+     * @param sipSignalingPort the SIP signaling port of the trunk.
+     */
+    public SipTrunk(String fqdn, int sipSignalingPort) {
+        this.fqdn = fqdn;
+        this.sipSignalingPort = sipSignalingPort;
+    }
 
     /**
      * Get the fqdn property: Gets or sets FQDN of the trunk.
@@ -28,33 +38,11 @@ public final class SipTrunk {
     }
 
     /**
-     * Set the fqdn property: Gets or sets FQDN of the trunk.
-     *
-     * @param fqdn the fqdn value to set.
-     * @return the Trunk object itself.
-     */
-    public SipTrunk setFqdn(String fqdn) {
-        this.fqdn = fqdn;
-        return this;
-    }
-
-    /**
      * Get the sipSignalingPort property: Gets or sets SIP signaling port of the trunk.
      *
      * @return the sipSignalingPort value.
      */
     public int getSipSignalingPort() {
         return this.sipSignalingPort;
-    }
-
-    /**
-     * Set the sipSignalingPort property: Gets or sets SIP signaling port of the trunk.
-     *
-     * @param sipSignalingPort the sipSignalingPort value to set.
-     * @return the Trunk object itself.
-     */
-    public SipTrunk setSipSignalingPort(int sipSignalingPort) {
-        this.sipSignalingPort = sipSignalingPort;
-        return this;
     }
 }

@@ -35,7 +35,7 @@ public class SetExample {
     }
 
     private static List<SipTrunk> prepareTrunks() {
-        return asList(new SipTrunk().setFqdn(TRUNK_FQDN).setSipSignalingPort(TRUNK_SIP_SIGNALING_PORT));
+        return asList(new SipTrunk(TRUNK_FQDN, TRUNK_SIP_SIGNALING_PORT));
     }
 
     private static List<SipTrunkRoute> prepareRoutes() {

@@ -28,8 +28,8 @@ public class Example {
 
         // Set trunks
         client.setTrunks(asList(
-            new SipTrunk().setFqdn("sbc.one.domain.com").setSipSignalingPort(5678),
-            new SipTrunk().setFqdn("sbc.two.domain.com").setSipSignalingPort(5678)
+            new SipTrunk("sbc.one.domain.com", 5678),
+            new SipTrunk("sbc.two.domain.com", 5678)
         ));
 
         // Set routes
@@ -45,7 +45,7 @@ public class Example {
         ));
 
         // Update a trunk
-        client.setTrunk(new SipTrunk().setFqdn("sbc.one.domain.com").setSipSignalingPort(1234));
+        client.setTrunk(new SipTrunk("sbc.one.domain.com", 1234));
 
         // Update a route
 //        client.setRoute(new TrunkRoute()

@@ -137,8 +137,8 @@ public class ReadmeSamples {
 
         // BEGIN: readme-sample-setTrunks
         List<SipTrunk> trunks = sipRoutingClient.setTrunks(asList(
-            new SipTrunk().setFqdn("trunk1.mysite.com").setSipSignalingPort(12345),
-            new SipTrunk().setFqdn("trunk2.mysite.com").setSipSignalingPort(23456)
+            new SipTrunk("trunk1.mysite.com", 12345),
+            new SipTrunk("trunk2.mysite.com", 23456)
         ));
         for (SipTrunk trunk : trunks) {
             System.out.println("Trunk FQDN: " + trunk.getFqdn());
