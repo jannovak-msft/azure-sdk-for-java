@@ -122,10 +122,10 @@ public final class SipRoutingAsyncClient {
      * Deletes SIP Trunk.
      *
      * @param fqdn SIP Trunk FQDN.
-     * @return Deleted SIP Trunk or null.
+     * @return void.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
-    public Mono<SipTrunk> deleteTrunk(String fqdn) {
+    public Mono<Void> deleteTrunk(String fqdn) {
         List<SipTrunk> trunks = listTrunks().block();
         List<SipTrunk> deletedTrunks = trunks.stream()
             .filter(trunk -> fqdn.equals(trunk.getFqdn()))
@@ -134,20 +134,19 @@ public final class SipRoutingAsyncClient {
         if (!deletedTrunks.isEmpty()) {
             Map<String, com.azure.communication.phonenumbers.siprouting.implementation.models.SipTrunk> trunksUpdate = new HashMap<>();
             trunksUpdate.put(fqdn, null);
-            return client.patchSipConfigurationAsync(new SipConfiguration().setTrunks(trunksUpdate))
-                .map(value -> deletedTrunks.get(0));
+            return client.patchSipConfigurationAsync(new SipConfiguration().setTrunks(trunksUpdate)).then();
         }
-        return null;
+        return Mono.empty();
     }
 
     /**
      * Deletes SIP Trunk.
      *
      * @param fqdn SIP Trunk FQDN.
-     * @return Response object with the deleted SIP Trunk or null.
+     * @return Response object.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
-    public Mono<Response<SipTrunk>> deleteTrunkWithResponse(String fqdn) {
+    public Mono<Response<Void>> deleteTrunkWithResponse(String fqdn) {
         List<SipTrunk> trunks = listTrunks().block();
         List<SipTrunk> deletedTrunks = trunks.stream().filter(trunk -> fqdn.equals(trunk.getFqdn()))
             .collect(Collectors.toList());
@@ -156,9 +155,9 @@ public final class SipRoutingAsyncClient {
             Map<String, com.azure.communication.phonenumbers.siprouting.implementation.models.SipTrunk> trunksUpdate = new HashMap<>();
             trunksUpdate.put(fqdn, null);
             return client.patchSipConfigurationWithResponseAsync(new SipConfiguration().setTrunks(trunksUpdate))
-                .map(result -> new SimpleResponse<>(result, deletedTrunks.get(0)));
+                .map(result -> new SimpleResponse<>(result, null));
         }
-        return null;
+        return Mono.empty();
     }
 
     /**

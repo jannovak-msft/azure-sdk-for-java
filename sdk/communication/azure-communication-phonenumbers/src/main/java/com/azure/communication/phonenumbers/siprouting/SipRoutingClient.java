@@ -144,10 +144,9 @@ public final class SipRoutingClient {
      * Deletes SIP Trunk.
      *
      * @param fqdn SIP Trunk FQDN.
-     * @return deleted SIP Trunk or null.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
-    public SipTrunk deleteTrunk(String fqdn) {
+    public void deleteTrunk(String fqdn) {
         List<SipTrunk> trunks = listTrunks();
         List<SipTrunk> deletedTrunks = trunks.stream()
             .filter(trunk -> fqdn.equals(trunk.getFqdn()))
@@ -157,9 +156,7 @@ public final class SipRoutingClient {
             Map<String, com.azure.communication.phonenumbers.siprouting.implementation.models.SipTrunk> trunksUpdate = new HashMap<>();
             trunksUpdate.put(fqdn, null);
             client.patchSipConfiguration(new SipConfiguration().setTrunks(trunksUpdate));
-            return deletedTrunks.get(0);
         }
-        return null;
     }
 
     /**
@@ -167,10 +164,10 @@ public final class SipRoutingClient {
      *
      * @param fqdn SIP Trunk FQDN.
      * @param context the context of the request. Can also be null or Context.NONE.
-     * @return Response object with the SIP Trunk.
+     * @return Response object.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
-    public Response<SipTrunk> deleteTrunkWithResponse(String fqdn, Context context) {
+    public Response<Void> deleteTrunkWithResponse(String fqdn, Context context) {
         List<SipTrunk> trunks = listTrunks();
         List<SipTrunk> deletedTrunks = trunks.stream().filter(trunk -> fqdn.equals(trunk.getFqdn()))
             .collect(Collectors.toList());
@@ -179,7 +176,7 @@ public final class SipRoutingClient {
             Map<String, com.azure.communication.phonenumbers.siprouting.implementation.models.SipTrunk> trunksUpdate = new HashMap<>();
             trunksUpdate.put(fqdn, null);
             return client.patchSipConfigurationWithResponseAsync(new SipConfiguration().setTrunks(trunksUpdate), context)
-                .map(result -> new SimpleResponse<>(result, deletedTrunks.get(0))).block();
+                .map(result -> new SimpleResponse<Void>(result, null)).block();
         }
         return null;
     }

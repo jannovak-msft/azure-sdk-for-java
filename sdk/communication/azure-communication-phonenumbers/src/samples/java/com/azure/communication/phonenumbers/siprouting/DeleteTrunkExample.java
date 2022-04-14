@@ -24,7 +24,7 @@ public class DeleteTrunkExample {
     public static void main(String[] args) {
         SipRoutingClient client = new SipRoutingClientBuilder().connectionString(CONNECTION_STRING).buildClient();
         print(client.listTrunks());
-        SipTrunk trunk = client.deleteTrunk(TRUNK_FQDN);
+        client.deleteTrunk(TRUNK_FQDN);
         print(client.listTrunks());
     }
 

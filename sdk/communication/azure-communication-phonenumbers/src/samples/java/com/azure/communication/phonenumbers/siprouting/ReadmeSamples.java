@@ -177,18 +177,12 @@ public class ReadmeSamples {
 
     /**
      * Sample code for deleting a SIP trunk.
-     *
-     * @return the deleted SIP trunk.
      */
-    public SipTrunk deleteTrunk() {
+    public void deleteTrunk() {
         SipRoutingClient sipRoutingClient = createSipRoutingClient();
 
         // BEGIN: readme-sample-deleteTrunk
-        SipTrunk trunk = sipRoutingClient.deleteTrunk("trunk1.mysite.com");
-        System.out.println("Deleted trunk FQDN: " + trunk.getFqdn());
-        System.out.println("Deleted trunk SIP signaling port: " + trunk.getSipSignalingPort());
+        sipRoutingClient.deleteTrunk("trunk1.mysite.com");
         // END: readme-sample-deleteTrunk
-
-        return trunk;
     }
 }
