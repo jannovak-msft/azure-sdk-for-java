@@ -108,13 +108,12 @@ public final class SipRoutingClient {
      * If a trunk with specified FQDN already exists, it will be replaced, otherwise a new trunk will be added.
      *
      * @param trunk SIP Trunk.
-     * @return SIP Trunks.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
-    public SipTrunk setTrunk(SipTrunk trunk) {
+    public void setTrunk(SipTrunk trunk) {
         Map<String, com.azure.communication.phonenumbers.siprouting.implementation.models.SipTrunk> trunks = new HashMap<>();
         trunks.put(trunk.getFqdn(), SipTrunkConverter.convert(trunk));
-        return client.patchSipConfigurationAsync(new SipConfiguration().setTrunks(trunks))
+        client.patchSipConfigurationAsync(new SipConfiguration().setTrunks(trunks))
             .map(result -> {
                 List<SipTrunk> filteredTrunks = SipTrunkConverter.convert(result.getTrunks()).stream()
                     .filter(value -> value.getFqdn().equals(trunk.getFqdn()))
@@ -129,15 +128,15 @@ public final class SipRoutingClient {
      *
      * @param trunk SIP Trunk.
      * @param context the context of the request. Can also be null or Context.NONE.
-     * @return Response object with the SIP Trunk.
+     * @return Response object.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
-    public Response<SipTrunk> setTrunkWithResponse(SipTrunk trunk, Context context) {
+    public Response<Void> setTrunkWithResponse(SipTrunk trunk, Context context) {
         Map<String, com.azure.communication.phonenumbers.siprouting.implementation.models.SipTrunk> trunks = new HashMap<>();
         trunks.put(trunk.getFqdn(), SipTrunkConverter.convert(trunk));
         SipConfiguration update = new SipConfiguration().setTrunks(trunks);
         return client.patchSipConfigurationWithResponseAsync(update, context)
-            .map(result -> new SimpleResponse<>(result, trunk)).block();
+            .map(result -> new SimpleResponse<Void>(result, null)).block();
     }
 
     /**

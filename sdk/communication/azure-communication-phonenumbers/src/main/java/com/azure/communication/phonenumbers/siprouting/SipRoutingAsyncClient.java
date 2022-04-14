@@ -87,19 +87,13 @@ public final class SipRoutingAsyncClient {
      * If a trunk with specified FQDN already exists, it will be replaced, otherwise a new trunk will be added.
      *
      * @param trunk SIP Trunk.
-     * @return SIP Trunks.
+     * @return void.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
-    public Mono<SipTrunk> setTrunk(SipTrunk trunk) {
+    public Mono<Void> setTrunk(SipTrunk trunk) {
         Map<String, com.azure.communication.phonenumbers.siprouting.implementation.models.SipTrunk> trunks = new HashMap<>();
         trunks.put(trunk.getFqdn(), SipTrunkConverter.convert(trunk));
-        return client.patchSipConfigurationAsync(new SipConfiguration().setTrunks(trunks))
-            .map(result -> {
-                List<SipTrunk> filteredTrunks = SipTrunkConverter.convert(result.getTrunks()).stream()
-                    .filter(value -> value.getFqdn().equals(trunk.getFqdn()))
-                    .collect(Collectors.toList());
-                return filteredTrunks.isEmpty() ? null : filteredTrunks.get(0);
-            });
+        return client.patchSipConfigurationAsync(new SipConfiguration().setTrunks(trunks)).then();
     }
 
     /**
@@ -107,15 +101,15 @@ public final class SipRoutingAsyncClient {
      * If a trunk with specified FQDN already exists, it will be replaced, otherwise a new trunk will be added.
      *
      * @param trunk SIP Trunk.
-     * @return Response object with the SIP Trunk.
+     * @return Response object.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
-    public Mono<Response<SipTrunk>> setTrunkWithResponse(SipTrunk trunk) {
+    public Mono<Response<Void>> setTrunkWithResponse(SipTrunk trunk) {
         Map<String, com.azure.communication.phonenumbers.siprouting.implementation.models.SipTrunk> trunks = new HashMap<>();
         trunks.put(trunk.getFqdn(), SipTrunkConverter.convert(trunk));
         SipConfiguration update = new SipConfiguration().setTrunks(trunks);
         return client.patchSipConfigurationWithResponseAsync(update)
-            .map(result -> new SimpleResponse<>(result, trunk));
+            .map(result -> new SimpleResponse<Void>(result, null));
     }
 
     /**
