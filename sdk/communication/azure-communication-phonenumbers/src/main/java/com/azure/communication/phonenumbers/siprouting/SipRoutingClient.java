@@ -5,7 +5,6 @@ package com.azure.communication.phonenumbers.siprouting;
 
 import com.azure.communication.phonenumbers.siprouting.implementation.SipRoutingAdminClientImpl;
 import com.azure.communication.phonenumbers.siprouting.implementation.converters.SipRoutingErrorConverter;
-import com.azure.communication.phonenumbers.siprouting.implementation.converters.SipTrunkConverter;
 import com.azure.communication.phonenumbers.siprouting.implementation.models.CommunicationErrorResponseException;
 import com.azure.communication.phonenumbers.siprouting.implementation.models.SipConfiguration;
 import com.azure.communication.phonenumbers.siprouting.models.SipRoutingError;
@@ -25,6 +24,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static com.azure.communication.phonenumbers.siprouting.implementation.converters.SipTrunkConverter.convertFromApi;
+import static com.azure.communication.phonenumbers.siprouting.implementation.converters.SipTrunkConverter.convertToApi;
+import static com.azure.communication.phonenumbers.siprouting.implementation.converters.SipTrunkRouteConverter.convertFromApi;
+import static com.azure.communication.phonenumbers.siprouting.implementation.converters.SipTrunkRouteConverter.convertToApi;
+
 /**
  * Client for SIP routing configuration.
  */
@@ -43,7 +47,7 @@ public final class SipRoutingClient {
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public List<SipTrunk> listTrunks() {
-        return SipTrunkConverter.convert(getSipConfiguration().getTrunks());
+        return convertFromApi(getSipConfiguration().getTrunks());
     }
 
     /**
@@ -56,7 +60,7 @@ public final class SipRoutingClient {
     public Response<List<SipTrunk>> listTrunksWithResponse(Context context) {
         return client.getSipConfigurationWithResponseAsync(context)
             .onErrorMap(CommunicationErrorResponseException.class, this::translateException)
-            .map(result -> new SimpleResponse<>(result, SipTrunkConverter.convert(result.getValue().getTrunks())))
+            .map(result -> new SimpleResponse<>(result, convertFromApi(result.getValue().getTrunks())))
             .block();
     }
 
@@ -68,7 +72,7 @@ public final class SipRoutingClient {
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public List<SipTrunk> setTrunks(List<SipTrunk> trunks) {
-        SipConfiguration update = new SipConfiguration().setTrunks(SipTrunkConverter.convert(trunks));
+        SipConfiguration update = new SipConfiguration().setTrunks(convertToApi(trunks));
         List<String> storedFqdns = listTrunks().stream().map(SipTrunk::getFqdn).collect(Collectors.toList());
         Set<String> updatedFqdns = trunks.stream().map(SipTrunk::getFqdn).collect(Collectors.toSet());
         for (String storedFqdn : storedFqdns) {
@@ -77,7 +81,7 @@ public final class SipRoutingClient {
             }
         }
 
-        return SipTrunkConverter.convert(setSipConfiguration(update).getTrunks());
+        return convertFromApi(setSipConfiguration(update).getTrunks());
     }
 
     /**
@@ -89,7 +93,7 @@ public final class SipRoutingClient {
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Response<List<SipTrunk>> setTrunksWithResponse(List<SipTrunk> trunks, Context context) {
-        SipConfiguration update = new SipConfiguration().setTrunks(SipTrunkConverter.convert(trunks));
+        SipConfiguration update = new SipConfiguration().setTrunks(convertToApi(trunks));
         List<String> storedFqdns = listTrunks().stream().map(SipTrunk::getFqdn).collect(Collectors.toList());
         Set<String> updatedFqdns = trunks.stream().map(SipTrunk::getFqdn).collect(Collectors.toSet());
         for (String storedFqdn : storedFqdns) {
@@ -99,7 +103,7 @@ public final class SipRoutingClient {
         }
 
         return client.patchSipConfigurationWithResponseAsync(update, context)
-            .map(result -> new SimpleResponse<>(result, SipTrunkConverter.convert(result.getValue().getTrunks())))
+            .map(result -> new SimpleResponse<>(result, convertFromApi(result.getValue().getTrunks())))
             .block();
     }
 
@@ -112,10 +116,10 @@ public final class SipRoutingClient {
     @ServiceMethod(returns = ReturnType.SINGLE)
     public void setTrunk(SipTrunk trunk) {
         Map<String, com.azure.communication.phonenumbers.siprouting.implementation.models.SipTrunk> trunks = new HashMap<>();
-        trunks.put(trunk.getFqdn(), SipTrunkConverter.convert(trunk));
+        trunks.put(trunk.getFqdn(), convertToApi(trunk));
         client.patchSipConfigurationAsync(new SipConfiguration().setTrunks(trunks))
             .map(result -> {
-                List<SipTrunk> filteredTrunks = SipTrunkConverter.convert(result.getTrunks()).stream()
+                List<SipTrunk> filteredTrunks = convertFromApi(result.getTrunks()).stream()
                     .filter(value -> value.getFqdn().equals(trunk.getFqdn()))
                     .collect(Collectors.toList());
                 return filteredTrunks.isEmpty() ? null : filteredTrunks.get(0);
@@ -133,7 +137,7 @@ public final class SipRoutingClient {
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Response<Void> setTrunkWithResponse(SipTrunk trunk, Context context) {
         Map<String, com.azure.communication.phonenumbers.siprouting.implementation.models.SipTrunk> trunks = new HashMap<>();
-        trunks.put(trunk.getFqdn(), SipTrunkConverter.convert(trunk));
+        trunks.put(trunk.getFqdn(), convertToApi(trunk));
         SipConfiguration update = new SipConfiguration().setTrunks(trunks);
         return client.patchSipConfigurationWithResponseAsync(update, context)
             .map(result -> new SimpleResponse<Void>(result, null)).block();
@@ -187,7 +191,7 @@ public final class SipRoutingClient {
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public List<SipTrunkRoute> listRoutes() {
-        return getSipConfiguration().getRoutes();
+        return convertFromApi(getSipConfiguration().getRoutes());
     }
 
     /**
@@ -200,7 +204,7 @@ public final class SipRoutingClient {
     public Response<List<SipTrunkRoute>> listRoutesWithResponse(Context context) {
         return client.getSipConfigurationWithResponseAsync(context)
             .onErrorMap(CommunicationErrorResponseException.class, this::translateException)
-            .map(result -> new SimpleResponse<>(result, result.getValue().getRoutes()))
+            .map(result -> new SimpleResponse<>(result, convertFromApi(result.getValue().getRoutes())))
             .block();
     }
 
@@ -212,7 +216,7 @@ public final class SipRoutingClient {
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public List<SipTrunkRoute> setRoutes(List<SipTrunkRoute> routes) {
-        return setSipConfiguration(new SipConfiguration().setRoutes(routes)).getRoutes();
+        return convertFromApi(setSipConfiguration(new SipConfiguration().setRoutes(convertToApi(routes))).getRoutes());
     }
 
     /**
@@ -224,8 +228,8 @@ public final class SipRoutingClient {
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Response<List<SipTrunkRoute>> setRoutesWithResponse(List<SipTrunkRoute> routes, Context context) {
-        return client.patchSipConfigurationWithResponseAsync(new SipConfiguration().setRoutes(routes), context)
-            .map(result -> new SimpleResponse<>(result, result.getValue().getRoutes()))
+        return client.patchSipConfigurationWithResponseAsync(new SipConfiguration().setRoutes(convertToApi(routes)), context)
+            .map(result -> new SimpleResponse<>(result, convertFromApi(result.getValue().getRoutes())))
             .block();
     }
 

@@ -5,7 +5,6 @@ package com.azure.communication.phonenumbers.siprouting;
 
 import com.azure.communication.phonenumbers.siprouting.implementation.SipRoutingAdminClientImpl;
 import com.azure.communication.phonenumbers.siprouting.implementation.converters.SipRoutingErrorConverter;
-import com.azure.communication.phonenumbers.siprouting.implementation.converters.SipTrunkConverter;
 import com.azure.communication.phonenumbers.siprouting.implementation.models.CommunicationErrorResponseException;
 import com.azure.communication.phonenumbers.siprouting.implementation.models.SipConfiguration;
 import com.azure.communication.phonenumbers.siprouting.models.SipRoutingError;
@@ -23,6 +22,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import static com.azure.communication.phonenumbers.siprouting.implementation.converters.SipTrunkConverter.convertFromApi;
+import static com.azure.communication.phonenumbers.siprouting.implementation.converters.SipTrunkConverter.convertToApi;
+import static com.azure.communication.phonenumbers.siprouting.implementation.converters.SipTrunkRouteConverter.convertFromApi;
+import static com.azure.communication.phonenumbers.siprouting.implementation.converters.SipTrunkRouteConverter.convertToApi;
 
 /**
  * Async client for SIP routing configuration.
@@ -42,7 +46,7 @@ public final class SipRoutingAsyncClient {
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<List<SipTrunk>> listTrunks() {
-        return getSipConfiguration().map(config -> SipTrunkConverter.convert(config.getTrunks()));
+        return getSipConfiguration().map(config -> convertFromApi(config.getTrunks()));
     }
 
     /**
@@ -54,7 +58,7 @@ public final class SipRoutingAsyncClient {
     public Mono<Response<List<SipTrunk>>> listTrunksWithResponse() {
         return client.getSipConfigurationWithResponseAsync()
             .onErrorMap(CommunicationErrorResponseException.class, this::translateException)
-            .map(result -> new SimpleResponse<>(result, SipTrunkConverter.convert(result.getValue().getTrunks())));
+            .map(result -> new SimpleResponse<>(result, convertFromApi(result.getValue().getTrunks())));
     }
 
     /**
@@ -65,8 +69,8 @@ public final class SipRoutingAsyncClient {
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<List<SipTrunk>> setTrunks(List<SipTrunk> trunks) {
-        SipConfiguration update = new SipConfiguration().setTrunks(SipTrunkConverter.convert(trunks));
-        return setSipConfiguration(update).map(config -> SipTrunkConverter.convert(config.getTrunks()));
+        SipConfiguration update = new SipConfiguration().setTrunks(convertToApi(trunks));
+        return setSipConfiguration(update).map(config -> convertFromApi(config.getTrunks()));
     }
 
     /**
@@ -77,9 +81,9 @@ public final class SipRoutingAsyncClient {
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<Response<List<SipTrunk>>> setTrunksWithResponse(List<SipTrunk> trunks) {
-        SipConfiguration update = new SipConfiguration().setTrunks(SipTrunkConverter.convert(trunks));
+        SipConfiguration update = new SipConfiguration().setTrunks(convertToApi(trunks));
         return client.patchSipConfigurationWithResponseAsync(update)
-            .map(result -> new SimpleResponse<>(result, SipTrunkConverter.convert(result.getValue().getTrunks())));
+            .map(result -> new SimpleResponse<>(result, convertFromApi(result.getValue().getTrunks())));
     }
 
     /**
@@ -92,7 +96,7 @@ public final class SipRoutingAsyncClient {
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<Void> setTrunk(SipTrunk trunk) {
         Map<String, com.azure.communication.phonenumbers.siprouting.implementation.models.SipTrunk> trunks = new HashMap<>();
-        trunks.put(trunk.getFqdn(), SipTrunkConverter.convert(trunk));
+        trunks.put(trunk.getFqdn(), convertToApi(trunk));
         return client.patchSipConfigurationAsync(new SipConfiguration().setTrunks(trunks)).then();
     }
 
@@ -106,7 +110,7 @@ public final class SipRoutingAsyncClient {
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<Response<Void>> setTrunkWithResponse(SipTrunk trunk) {
         Map<String, com.azure.communication.phonenumbers.siprouting.implementation.models.SipTrunk> trunks = new HashMap<>();
-        trunks.put(trunk.getFqdn(), SipTrunkConverter.convert(trunk));
+        trunks.put(trunk.getFqdn(), convertToApi(trunk));
         SipConfiguration update = new SipConfiguration().setTrunks(trunks);
         return client.patchSipConfigurationWithResponseAsync(update)
             .map(result -> new SimpleResponse<Void>(result, null));
@@ -161,7 +165,7 @@ public final class SipRoutingAsyncClient {
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<List<SipTrunkRoute>> listRoutes() {
-        return getSipConfiguration().map(SipConfiguration::getRoutes);
+        return getSipConfiguration().map(sipConfiguration -> convertFromApi(sipConfiguration.getRoutes()));
     }
 
     /**
@@ -173,7 +177,7 @@ public final class SipRoutingAsyncClient {
     public Mono<Response<List<SipTrunkRoute>>> listRoutesWithResponse() {
         return client.getSipConfigurationWithResponseAsync()
             .onErrorMap(CommunicationErrorResponseException.class, this::translateException)
-            .map(result -> new SimpleResponse<>(result, result.getValue().getRoutes()));
+            .map(result -> new SimpleResponse<>(result, convertFromApi(result.getValue().getRoutes())));
     }
 
     /**
@@ -184,7 +188,8 @@ public final class SipRoutingAsyncClient {
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<List<SipTrunkRoute>> setRoutes(List<SipTrunkRoute> routes) {
-        return setSipConfiguration(new SipConfiguration().setRoutes(routes)).map(SipConfiguration::getRoutes);
+        return setSipConfiguration(new SipConfiguration().setRoutes(convertToApi(routes)))
+            .map(sipConfiguration -> convertFromApi(sipConfiguration.getRoutes()));
     }
 
     /**
@@ -195,8 +200,8 @@ public final class SipRoutingAsyncClient {
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<Response<List<SipTrunkRoute>>> setRoutesWithResponse(List<SipTrunkRoute> routes) {
-        return client.patchSipConfigurationWithResponseAsync(new SipConfiguration().setRoutes(routes))
-            .map(result -> new SimpleResponse<>(result, result.getValue().getRoutes()));
+        return client.patchSipConfigurationWithResponseAsync(new SipConfiguration().setRoutes(convertToApi(routes)))
+            .map(result -> new SimpleResponse<>(result, convertFromApi(result.getValue().getRoutes())));
     }
 
     private Mono<SipConfiguration> getSipConfiguration() {

@@ -39,8 +39,7 @@ public class SetExample {
     }
 
     private static List<SipTrunkRoute> prepareRoutes() {
-        return asList(
-            new SipTrunkRoute().setName(ROUTE_NAME).setNumberPattern(ROUTE_PATTERN).setTrunks(asList(TRUNK_FQDN)));
+        return asList(new SipTrunkRoute(ROUTE_NAME, ROUTE_PATTERN).setTrunks(asList(TRUNK_FQDN)));
     }
 
     private static void print(List<SipTrunk> trunks, List<SipTrunkRoute> routes) {

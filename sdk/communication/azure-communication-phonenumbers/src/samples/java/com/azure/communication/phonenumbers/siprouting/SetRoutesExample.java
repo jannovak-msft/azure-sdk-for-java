@@ -34,8 +34,8 @@ public class SetRoutesExample {
 
     private static List<SipTrunkRoute> prepareRoutes() {
         return asList(
-            new SipTrunkRoute().setName(FIRST_ROUTE_NAME).setNumberPattern(FIRST_ROUTE_PATTERN),
-            new SipTrunkRoute().setName(SECOND_ROUTE_NAME).setNumberPattern(SECOND_ROUTE_PATTERN)
+            new SipTrunkRoute(FIRST_ROUTE_NAME, FIRST_ROUTE_PATTERN),
+            new SipTrunkRoute(SECOND_ROUTE_NAME, SECOND_ROUTE_PATTERN)
         );
     }
 

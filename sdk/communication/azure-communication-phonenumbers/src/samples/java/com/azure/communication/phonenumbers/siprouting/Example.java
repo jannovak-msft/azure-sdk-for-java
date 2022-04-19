@@ -34,13 +34,9 @@ public class Example {
 
         // Set routes
         client.setRoutes(asList(
-            new SipTrunkRoute()
-                .setName("first route name")
-                .setNumberPattern("[1-9][0-9]{3,23}")
+            new SipTrunkRoute("first route name", "[1-9][0-9]{3,23}")
                 .setTrunks(asList("sbc.one.domain.com")),
-            new SipTrunkRoute()
-                .setName("second route name")
-                .setNumberPattern(".*")
+            new SipTrunkRoute("second route name", ".*")
                 .setTrunks(asList("sbc.two.domain.com", "sbc.one.domain.com"))
         ));
 

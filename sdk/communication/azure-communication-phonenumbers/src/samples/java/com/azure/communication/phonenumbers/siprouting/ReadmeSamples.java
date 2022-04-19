@@ -159,9 +159,9 @@ public class ReadmeSamples {
 
         // BEGIN: readme-sample-setRoutes
         List<SipTrunkRoute> routes = sipRoutingClient.setRoutes(asList(
-            new SipTrunkRoute().setName("route name1").setNumberPattern(".*")
+            new SipTrunkRoute("route name1", ".*")
                 .setTrunks(asList("trunk1.mysite.com", "trunk2.mysite.com")),
-            new SipTrunkRoute().setName("route name2").setNumberPattern(".*9")
+            new SipTrunkRoute("route name2", ".*9")
                 .setTrunks(asList("trunk2.mysite.com"))
         ));
         for (SipTrunkRoute route : routes) {

@@ -4,10 +4,7 @@
 
 package com.azure.communication.phonenumbers.siprouting.models;
 
-import com.azure.core.annotation.Fluent;
-
 /** Represents a SIP trunk for routing calls. See RFC 4904. */
-@Fluent
 public final class SipTrunk {
     /*
      * Gets or sets FQDN of the trunk.
