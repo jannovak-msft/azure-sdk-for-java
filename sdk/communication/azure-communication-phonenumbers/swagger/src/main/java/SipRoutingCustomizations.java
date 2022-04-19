@@ -30,9 +30,6 @@ public class SipRoutingCustomizations extends Customization {
         sipConfigurationClass
             .getProperty("routes")
             .addAnnotation("@JsonInclude(value = JsonInclude.Include.NON_ABSENT)");
-//        sipConfigurationClass.addMethod(
-//                "public SipConfiguration() {}"
-//        );
     }
 
 }
