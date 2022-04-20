@@ -29,8 +29,8 @@ public class SipRoutingClientIntegrationTest extends SipRoutingIntegrationTestBa
         assertNotNull(client.listTrunks());
     }
 
-    @ParameterizedTest
-    @MethodSource("com.azure.core.test.TestBase#getHttpClients")
+//    @ParameterizedTest
+//    @MethodSource("com.azure.core.test.TestBase#getHttpClients")
     public void getPurchasedPhoneNumberWithAAD(HttpClient httpClient) {
         SipRoutingClient client = getClientWithManagedIdentity(httpClient, "getTrunksWithAADSync");
         assertNotNull(client.listTrunks());

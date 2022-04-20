@@ -65,6 +65,30 @@ public final class SipRoutingClient {
     }
 
     /**
+     * Lists SIP Trunk Routes.
+     *
+     * @return SIP Trunk Routes.
+     */
+    @ServiceMethod(returns = ReturnType.SINGLE)
+    public List<SipTrunkRoute> listRoutes() {
+        return convertFromApi(getSipConfiguration().getRoutes());
+    }
+
+    /**
+     * Lists SIP Trunk Routes.
+     *
+     * @param context the context of the request. Can also be null or Context.NONE.
+     * @return Response object with the SIP Trunk Routes.
+     */
+    @ServiceMethod(returns = ReturnType.SINGLE)
+    public Response<List<SipTrunkRoute>> listRoutesWithResponse(Context context) {
+        return client.getSipConfigurationWithResponseAsync(context)
+            .onErrorMap(CommunicationErrorResponseException.class, this::translateException)
+            .map(result -> new SimpleResponse<>(result, convertFromApi(result.getValue().getRoutes())))
+            .block();
+    }
+
+    /**
      * Sets SIP Trunks.
      *
      * @param trunks SIP Trunks.
@@ -136,6 +160,30 @@ public final class SipRoutingClient {
     }
 
     /**
+     * Sets SIP Trunk Routes.
+     *
+     * @param routes SIP Trunk Routes.
+     */
+    @ServiceMethod(returns = ReturnType.SINGLE)
+    public void setRoutes(List<SipTrunkRoute> routes) {
+        setSipConfiguration(new SipConfiguration().setRoutes(convertToApi(routes)));
+    }
+
+    /**
+     * Sets SIP Trunk Routes.
+     *
+     * @param routes SIP Trunk Routes.
+     * @param context the context of the request. Can also be null or Context.NONE.
+     * @return Response object.
+     */
+    @ServiceMethod(returns = ReturnType.SINGLE)
+    public Response<Void> setRoutesWithResponse(List<SipTrunkRoute> routes, Context context) {
+        return client.patchSipConfigurationWithResponseAsync(new SipConfiguration().setRoutes(convertToApi(routes)), context)
+            .map(result -> new SimpleResponse<Void>(result, null))
+            .block();
+    }
+
+    /**
      * Deletes SIP Trunk.
      *
      * @param fqdn SIP Trunk FQDN.
@@ -174,54 +222,6 @@ public final class SipRoutingClient {
                 .map(result -> new SimpleResponse<Void>(result, null)).block();
         }
         return null;
-    }
-
-    /**
-     * Lists SIP Trunk Routes.
-     *
-     * @return SIP Trunk Routes.
-     */
-    @ServiceMethod(returns = ReturnType.SINGLE)
-    public List<SipTrunkRoute> listRoutes() {
-        return convertFromApi(getSipConfiguration().getRoutes());
-    }
-
-    /**
-     * Lists SIP Trunk Routes.
-     *
-     * @param context the context of the request. Can also be null or Context.NONE.
-     * @return Response object with the SIP Trunk Routes.
-     */
-    @ServiceMethod(returns = ReturnType.SINGLE)
-    public Response<List<SipTrunkRoute>> listRoutesWithResponse(Context context) {
-        return client.getSipConfigurationWithResponseAsync(context)
-            .onErrorMap(CommunicationErrorResponseException.class, this::translateException)
-            .map(result -> new SimpleResponse<>(result, convertFromApi(result.getValue().getRoutes())))
-            .block();
-    }
-
-    /**
-     * Sets SIP Trunk Routes.
-     *
-     * @param routes SIP Trunk Routes.
-     */
-    @ServiceMethod(returns = ReturnType.SINGLE)
-    public void setRoutes(List<SipTrunkRoute> routes) {
-        setSipConfiguration(new SipConfiguration().setRoutes(convertToApi(routes)));
-    }
-
-    /**
-     * Sets SIP Trunk Routes.
-     *
-     * @param routes SIP Trunk Routes.
-     * @param context the context of the request. Can also be null or Context.NONE.
-     * @return Response object.
-     */
-    @ServiceMethod(returns = ReturnType.SINGLE)
-    public Response<Void> setRoutesWithResponse(List<SipTrunkRoute> routes, Context context) {
-        return client.patchSipConfigurationWithResponseAsync(new SipConfiguration().setRoutes(convertToApi(routes)), context)
-            .map(result -> new SimpleResponse<Void>(result, null))
-            .block();
     }
 
     private SipConfiguration getSipConfiguration() {

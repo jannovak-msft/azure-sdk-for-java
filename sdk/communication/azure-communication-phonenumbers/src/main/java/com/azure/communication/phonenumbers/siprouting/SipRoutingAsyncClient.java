@@ -62,6 +62,28 @@ public final class SipRoutingAsyncClient {
     }
 
     /**
+     * Lists SIP Trunk Routes.
+     *
+     * @return SIP Trunk Routes.
+     */
+    @ServiceMethod(returns = ReturnType.SINGLE)
+    public Mono<List<SipTrunkRoute>> listRoutes() {
+        return getSipConfiguration().map(sipConfiguration -> convertFromApi(sipConfiguration.getRoutes()));
+    }
+
+    /**
+     * Lists SIP Trunk Routes.
+     *
+     * @return Response object with the SIP Trunk Routes.
+     */
+    @ServiceMethod(returns = ReturnType.SINGLE)
+    public Mono<Response<List<SipTrunkRoute>>> listRoutesWithResponse() {
+        return client.getSipConfigurationWithResponseAsync()
+            .onErrorMap(CommunicationErrorResponseException.class, this::translateException)
+            .map(result -> new SimpleResponse<>(result, convertFromApi(result.getValue().getRoutes())));
+    }
+
+    /**
      * Sets SIP Trunks.
      *
      * @param trunks SIP Trunks.
@@ -117,6 +139,29 @@ public final class SipRoutingAsyncClient {
     }
 
     /**
+     * Sets SIP Trunk Routes.
+     *
+     * @param routes SIP Trunk Routes.
+     * @return void.
+     */
+    @ServiceMethod(returns = ReturnType.SINGLE)
+    public Mono<Void> setRoutes(List<SipTrunkRoute> routes) {
+        return setSipConfiguration(new SipConfiguration().setRoutes(convertToApi(routes))).then();
+    }
+
+    /**
+     * Sets SIP Trunk Routes.
+     *
+     * @param routes SIP Trunk Routes.
+     * @return Response object.
+     */
+    @ServiceMethod(returns = ReturnType.SINGLE)
+    public Mono<Response<Void>> setRoutesWithResponse(List<SipTrunkRoute> routes) {
+        return client.patchSipConfigurationWithResponseAsync(new SipConfiguration().setRoutes(convertToApi(routes)))
+            .map(result -> new SimpleResponse<Void>(result, null));
+    }
+
+    /**
      * Deletes SIP Trunk.
      *
      * @param fqdn SIP Trunk FQDN.
@@ -156,51 +201,6 @@ public final class SipRoutingAsyncClient {
                 .map(result -> new SimpleResponse<>(result, null));
         }
         return Mono.empty();
-    }
-
-    /**
-     * Lists SIP Trunk Routes.
-     *
-     * @return SIP Trunk Routes.
-     */
-    @ServiceMethod(returns = ReturnType.SINGLE)
-    public Mono<List<SipTrunkRoute>> listRoutes() {
-        return getSipConfiguration().map(sipConfiguration -> convertFromApi(sipConfiguration.getRoutes()));
-    }
-
-    /**
-     * Lists SIP Trunk Routes.
-     *
-     * @return Response object with the SIP Trunk Routes.
-     */
-    @ServiceMethod(returns = ReturnType.SINGLE)
-    public Mono<Response<List<SipTrunkRoute>>> listRoutesWithResponse() {
-        return client.getSipConfigurationWithResponseAsync()
-            .onErrorMap(CommunicationErrorResponseException.class, this::translateException)
-            .map(result -> new SimpleResponse<>(result, convertFromApi(result.getValue().getRoutes())));
-    }
-
-    /**
-     * Sets SIP Trunk Routes.
-     *
-     * @param routes SIP Trunk Routes.
-     * @return void.
-     */
-    @ServiceMethod(returns = ReturnType.SINGLE)
-    public Mono<Void> setRoutes(List<SipTrunkRoute> routes) {
-        return setSipConfiguration(new SipConfiguration().setRoutes(convertToApi(routes))).then();
-    }
-
-    /**
-     * Sets SIP Trunk Routes.
-     *
-     * @param routes SIP Trunk Routes.
-     * @return Response object.
-     */
-    @ServiceMethod(returns = ReturnType.SINGLE)
-    public Mono<Response<Void>> setRoutesWithResponse(List<SipTrunkRoute> routes) {
-        return client.patchSipConfigurationWithResponseAsync(new SipConfiguration().setRoutes(convertToApi(routes)))
-            .map(result -> new SimpleResponse<Void>(result, null));
     }
 
     private Mono<SipConfiguration> getSipConfiguration() {
