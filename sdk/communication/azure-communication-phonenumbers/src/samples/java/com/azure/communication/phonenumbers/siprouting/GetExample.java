@@ -22,8 +22,10 @@ public class GetExample {
 
     public static void main(String[] args) {
         SipRoutingClient client = new SipRoutingClientBuilder().connectionString(CONNECTION_STRING).buildClient();
+
         List<SipTrunk> trunks = client.listTrunks();
         List<SipTrunkRoute> routes = client.listRoutes();
+
         print(trunks, routes);
     }
 

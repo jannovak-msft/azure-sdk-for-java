@@ -129,50 +129,30 @@ public class ReadmeSamples {
 
     /**
      * Sample code for setting SIP trunks.
-     *
-     * @return the SIP trunks.
      */
-    public List<SipTrunk> setTrunks() {
+    public void setTrunks() {
         SipRoutingClient sipRoutingClient = createSipRoutingClient();
 
         // BEGIN: readme-sample-setTrunks
-        List<SipTrunk> trunks = sipRoutingClient.setTrunks(asList(
+        sipRoutingClient.setTrunks(asList(
             new SipTrunk("trunk1.mysite.com", 12345),
             new SipTrunk("trunk2.mysite.com", 23456)
         ));
-        for (SipTrunk trunk : trunks) {
-            System.out.println("Trunk FQDN: " + trunk.getFqdn());
-            System.out.println("Trunk SIP signaling port: " + trunk.getSipSignalingPort());
-        }
         // END: readme-sample-setTrunks
-
-        return trunks;
     }
 
     /**
      * Sample code for setting SIP trunk routes.
-     *
-     * @return the SIP trunk routes.
      */
-    public List<SipTrunkRoute> setRoutes() {
+    public void setRoutes() {
         SipRoutingClient sipRoutingClient = createSipRoutingClient();
 
         // BEGIN: readme-sample-setRoutes
-        List<SipTrunkRoute> routes = sipRoutingClient.setRoutes(asList(
-            new SipTrunkRoute("route name1", ".*")
-                .setTrunks(asList("trunk1.mysite.com", "trunk2.mysite.com")),
-            new SipTrunkRoute("route name2", ".*9")
-                .setTrunks(asList("trunk2.mysite.com"))
+        sipRoutingClient.setRoutes(asList(
+            new SipTrunkRoute("route name1", ".*").setTrunks(asList("trunk1.mysite.com", "trunk2.mysite.com")),
+            new SipTrunkRoute("route name2", ".*9").setTrunks(asList("trunk2.mysite.com"))
         ));
-        for (SipTrunkRoute route : routes) {
-            System.out.println("Route name: " + route.getName());
-            System.out.println("Route description: " + route.getDescription());
-            System.out.println("Route number pattern: " + route.getNumberPattern());
-            System.out.println("Route trunks: " + String.join(",", route.getTrunks()));
-        }
         // END: readme-sample-setRoutes
-
-        return routes;
     }
 
     /**

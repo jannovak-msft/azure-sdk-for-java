@@ -28,8 +28,10 @@ public class SetRoutesExample {
 
     public static void main(String[] args) {
         SipRoutingClient client = new SipRoutingClientBuilder().connectionString(CONNECTION_STRING).buildClient();
-        List<SipTrunkRoute> routes = client.setRoutes(prepareRoutes());
-        print(routes);
+
+        client.setRoutes(prepareRoutes());
+
+        print(client.listRoutes());
     }
 
     private static List<SipTrunkRoute> prepareRoutes() {

@@ -57,10 +57,8 @@ public class SipRoutingClientIntegrationTest extends SipRoutingIntegrationTestBa
             new SipTrunk("2.fqdn.com", 2345),
             new SipTrunk("3.fqdn.com", 3456)
         );
-        List<SipTrunk> setTrunks = client.setTrunks(expectedTrunks);
-        validateTrunks(expectedTrunks, setTrunks);
-        List<SipTrunk> getTrunks = client.listTrunks();
-        validateTrunks(expectedTrunks, getTrunks);
+        client.setTrunks(expectedTrunks);
+        validateTrunks(expectedTrunks, client.listTrunks());
     }
 
     @ParameterizedTest
@@ -94,11 +92,9 @@ public class SipRoutingClientIntegrationTest extends SipRoutingIntegrationTestBa
             new SipTrunk("2.fqdn.com", 2345),
             new SipTrunk("3.fqdn.com", 3456)
         );
-        Response<List<SipTrunk>> response = client.setTrunksWithResponse(expectedTrunks, Context.NONE);
+        Response<Void> response = client.setTrunksWithResponse(expectedTrunks, Context.NONE);
         assertNotNull(response);
-        assertNotNull(response.getValue());
         assertEquals(200, response.getStatusCode());
-        validateTrunks(expectedTrunks, response.getValue());
         validateTrunks(expectedTrunks, client.listTrunks());
     }
 
@@ -167,11 +163,11 @@ public class SipRoutingClientIntegrationTest extends SipRoutingIntegrationTestBa
     @MethodSource("com.azure.core.test.TestBase#getHttpClients")
     public void setRoutes(HttpClient httpClient) {
         SipRoutingClient client = getClientWithConnectionString(httpClient, "setRoutesSync");
-        validateRoutes(client.setRoutes(asList(
+        client.setRoutes(asList(
             new SipTrunkRoute("route0", "0.*").setDescription("desc0"),
             new SipTrunkRoute("route1", "1.*").setDescription("desc1"),
             new SipTrunkRoute("route2", "2.*").setDescription("desc2")
-        )));
+        ));
         validateRoutes(client.listRoutes());
     }
 
@@ -201,15 +197,13 @@ public class SipRoutingClientIntegrationTest extends SipRoutingIntegrationTestBa
     @MethodSource("com.azure.core.test.TestBase#getHttpClients")
     public void setRoutesWithResponse(HttpClient httpClient) {
         SipRoutingClient client = getClientWithConnectionString(httpClient, "setRoutesWithResponse");
-        Response<List<SipTrunkRoute>> response = client.setRoutesWithResponse(asList(
+        Response<Void> response = client.setRoutesWithResponse(asList(
             new SipTrunkRoute("route0", "0.*").setDescription("desc0"),
             new SipTrunkRoute("route1", "1.*").setDescription("desc1"),
             new SipTrunkRoute("route2", "2.*").setDescription("desc2")
         ), Context.NONE);
         assertNotNull(response);
-        assertNotNull(response.getValue());
         assertEquals(200, response.getStatusCode());
-        validateRoutes(response.getValue());
         validateRoutes(client.listRoutes());
     }
 

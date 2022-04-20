@@ -24,7 +24,9 @@ public class SetTrunkExample {
 
     public static void main(String[] args) {
         SipRoutingClient client = new SipRoutingClientBuilder().connectionString(CONNECTION_STRING).buildClient();
+
         client.setTrunk(prepareTrunk());
+
         print(client.listTrunks());
     }
 

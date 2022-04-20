@@ -65,25 +65,25 @@ public final class SipRoutingAsyncClient {
      * Sets SIP Trunks.
      *
      * @param trunks SIP Trunks.
-     * @return SIP Trunks.
+     * @return void.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
-    public Mono<List<SipTrunk>> setTrunks(List<SipTrunk> trunks) {
+    public Mono<Void> setTrunks(List<SipTrunk> trunks) {
         SipConfiguration update = new SipConfiguration().setTrunks(convertToApi(trunks));
-        return setSipConfiguration(update).map(config -> convertFromApi(config.getTrunks()));
+        return setSipConfiguration(update).then();
     }
 
     /**
      * Sets SIP Trunks.
      *
      * @param trunks SIP Trunks.
-     * @return Response object with the SIP Trunks.
+     * @return Response object.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
-    public Mono<Response<List<SipTrunk>>> setTrunksWithResponse(List<SipTrunk> trunks) {
+    public Mono<Response<Void>> setTrunksWithResponse(List<SipTrunk> trunks) {
         SipConfiguration update = new SipConfiguration().setTrunks(convertToApi(trunks));
         return client.patchSipConfigurationWithResponseAsync(update)
-            .map(result -> new SimpleResponse<>(result, convertFromApi(result.getValue().getTrunks())));
+            .map(result -> new SimpleResponse<Void>(result, null));
     }
 
     /**
@@ -184,24 +184,23 @@ public final class SipRoutingAsyncClient {
      * Sets SIP Trunk Routes.
      *
      * @param routes SIP Trunk Routes.
-     * @return SIP Trunk Routes.
+     * @return void.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
-    public Mono<List<SipTrunkRoute>> setRoutes(List<SipTrunkRoute> routes) {
-        return setSipConfiguration(new SipConfiguration().setRoutes(convertToApi(routes)))
-            .map(sipConfiguration -> convertFromApi(sipConfiguration.getRoutes()));
+    public Mono<Void> setRoutes(List<SipTrunkRoute> routes) {
+        return setSipConfiguration(new SipConfiguration().setRoutes(convertToApi(routes))).then();
     }
 
     /**
      * Sets SIP Trunk Routes.
      *
      * @param routes SIP Trunk Routes.
-     * @return Response object with the SIP Trunk Routes.
+     * @return Response object.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
-    public Mono<Response<List<SipTrunkRoute>>> setRoutesWithResponse(List<SipTrunkRoute> routes) {
+    public Mono<Response<Void>> setRoutesWithResponse(List<SipTrunkRoute> routes) {
         return client.patchSipConfigurationWithResponseAsync(new SipConfiguration().setRoutes(convertToApi(routes)))
-            .map(result -> new SimpleResponse<>(result, convertFromApi(result.getValue().getRoutes())));
+            .map(result -> new SimpleResponse<Void>(result, null));
     }
 
     private Mono<SipConfiguration> getSipConfiguration() {

@@ -29,9 +29,11 @@ public class SetExample {
 
     public static void main(String[] args) {
         SipRoutingClient client = new SipRoutingClientBuilder().connectionString(CONNECTION_STRING).buildClient();
-        List<SipTrunk> trunks = client.setTrunks(prepareTrunks());
-        List<SipTrunkRoute> routes = client.setRoutes(prepareRoutes());
-        print(trunks, routes);
+
+        client.setTrunks(prepareTrunks());
+        client.setRoutes(prepareRoutes());
+
+        print(client.listTrunks(), client.listRoutes());
     }
 
     private static List<SipTrunk> prepareTrunks() {

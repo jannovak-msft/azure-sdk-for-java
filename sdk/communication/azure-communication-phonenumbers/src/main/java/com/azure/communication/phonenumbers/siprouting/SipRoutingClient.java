@@ -68,10 +68,9 @@ public final class SipRoutingClient {
      * Sets SIP Trunks.
      *
      * @param trunks SIP Trunks.
-     * @return SIP Trunks.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
-    public List<SipTrunk> setTrunks(List<SipTrunk> trunks) {
+    public void setTrunks(List<SipTrunk> trunks) {
         SipConfiguration update = new SipConfiguration().setTrunks(convertToApi(trunks));
         List<String> storedFqdns = listTrunks().stream().map(SipTrunk::getFqdn).collect(Collectors.toList());
         Set<String> updatedFqdns = trunks.stream().map(SipTrunk::getFqdn).collect(Collectors.toSet());
@@ -80,8 +79,7 @@ public final class SipRoutingClient {
                 update.getTrunks().put(storedFqdn, null);
             }
         }
-
-        return convertFromApi(setSipConfiguration(update).getTrunks());
+        setSipConfiguration(update);
     }
 
     /**
@@ -89,10 +87,10 @@ public final class SipRoutingClient {
      *
      * @param trunks SIP Trunks.
      * @param context the context of the request. Can also be null or Context.NONE.
-     * @return Response object with the SIP Trunks.
+     * @return Response object.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
-    public Response<List<SipTrunk>> setTrunksWithResponse(List<SipTrunk> trunks, Context context) {
+    public Response<Void> setTrunksWithResponse(List<SipTrunk> trunks, Context context) {
         SipConfiguration update = new SipConfiguration().setTrunks(convertToApi(trunks));
         List<String> storedFqdns = listTrunks().stream().map(SipTrunk::getFqdn).collect(Collectors.toList());
         Set<String> updatedFqdns = trunks.stream().map(SipTrunk::getFqdn).collect(Collectors.toSet());
@@ -103,7 +101,7 @@ public final class SipRoutingClient {
         }
 
         return client.patchSipConfigurationWithResponseAsync(update, context)
-            .map(result -> new SimpleResponse<>(result, convertFromApi(result.getValue().getTrunks())))
+            .map(result -> new SimpleResponse<Void>(result, null))
             .block();
     }
 
@@ -117,13 +115,7 @@ public final class SipRoutingClient {
     public void setTrunk(SipTrunk trunk) {
         Map<String, com.azure.communication.phonenumbers.siprouting.implementation.models.SipTrunk> trunks = new HashMap<>();
         trunks.put(trunk.getFqdn(), convertToApi(trunk));
-        client.patchSipConfigurationAsync(new SipConfiguration().setTrunks(trunks))
-            .map(result -> {
-                List<SipTrunk> filteredTrunks = convertFromApi(result.getTrunks()).stream()
-                    .filter(value -> value.getFqdn().equals(trunk.getFqdn()))
-                    .collect(Collectors.toList());
-                return filteredTrunks.isEmpty() ? null : filteredTrunks.get(0);
-            }).block();
+        client.patchSipConfigurationAsync(new SipConfiguration().setTrunks(trunks)).block();
     }
 
     /**
@@ -212,11 +204,10 @@ public final class SipRoutingClient {
      * Sets SIP Trunk Routes.
      *
      * @param routes SIP Trunk Routes.
-     * @return SIP Trunk Routes.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
-    public List<SipTrunkRoute> setRoutes(List<SipTrunkRoute> routes) {
-        return convertFromApi(setSipConfiguration(new SipConfiguration().setRoutes(convertToApi(routes))).getRoutes());
+    public void setRoutes(List<SipTrunkRoute> routes) {
+        setSipConfiguration(new SipConfiguration().setRoutes(convertToApi(routes)));
     }
 
     /**
@@ -224,12 +215,12 @@ public final class SipRoutingClient {
      *
      * @param routes SIP Trunk Routes.
      * @param context the context of the request. Can also be null or Context.NONE.
-     * @return Response object with the SIP Trunk Routes.
+     * @return Response object.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
-    public Response<List<SipTrunkRoute>> setRoutesWithResponse(List<SipTrunkRoute> routes, Context context) {
+    public Response<Void> setRoutesWithResponse(List<SipTrunkRoute> routes, Context context) {
         return client.patchSipConfigurationWithResponseAsync(new SipConfiguration().setRoutes(convertToApi(routes)), context)
-            .map(result -> new SimpleResponse<>(result, convertFromApi(result.getValue().getRoutes())))
+            .map(result -> new SimpleResponse<Void>(result, null))
             .block();
     }
 
